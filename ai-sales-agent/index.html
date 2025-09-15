@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Lighter background for a cleaner look */
+            color: #334155;
+        }
+        .whitespace-pre-wrap {
+            white-space: pre-wrap;
+        }
+        .container-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 3rem;
+        }
+        input, select, textarea {
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6; /* Blue for a modern, professional feel */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary {
+            background-color: #1e3a8a; /* Darker blue for a professional tone */
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #1e40af;
+        }
+        .copy-btn:hover svg {
+            color: #1e40af;
+        }
+        .bg-gray-input {
+            background-color: #f8fafc;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Animation Classes */
+        .animate-fade-in { animation: fadeIn 1s ease-in-out; }
+        .animate-slide-up { animation: slideInUp 1s ease-in-out; }
+        .animate-zoom-in { animation: zoomIn 1s ease-in-out; }
+    </style>
+</head>
+<body class="p-6 md:p-10 flex items-start justify-center min-h-screen">
+    <div class="w-full max-w-4xl container-card">
+        <!-- Main Application Content -->
+        <div id="mainContent">
+            <div class="text-center mb-4">
+                <div class="flex items-center justify-center space-x-4">
+                    <img src="https://icons.iconarchive.com/icons/noctuline/wall-e/128/EVE-icon.png" alt="EVE Icon" class="w-12 h-12" />
+                    <h1 class="text-4xl font-bold text-slate-800">AI Sales Agent</h1>
+                </div>
+                <p class="mt-2 text-lg text-slate-500">Generate personalized emails with three distinct tones.</p>
+                <button id="showHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block">Help & FAQ</button>
+            </div>
+            
+            <p id="userIdDisplay" class="text-sm text-slate-400 text-center mb-6 hidden">Your User ID: </p>
+            
+            <!-- Random Sales Quote Section -->
+            <div id="quoteSection" class="mt-8 mb-8 p-6 bg-blue-100 rounded-xl text-center shadow-md">
+                <p id="quoteText" class="text-blue-900 font-semibold italic text-lg"></p>
+            </div>
+
+            <!-- Coaching Corner -->
+            <div id="coachingCorner" class="mt-12 p-8 bg-gray-50 border border-gray-200 rounded-xl animate-fade-in">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Coaching Corner</h2>
+                <p id="coachingTip" class="text-gray-600 italic"></p>
+            </div>
+    
+            <!-- Input Form -->
+            <form id="emailForm" class="space-y-6">
+                <!-- My Company Section -->
+                <div class="p-6 border border-gray-200 rounded-xl">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">My Company</h2>
+                    <div>
+                        <label for="sourceCompanySelector" class="block text-sm font-medium text-slate-700">My Company<span class="text-red-500">*</span></label>
+                        <select id="sourceCompanySelector" name="sourceCompanySelector" required class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                            <option value="">(Select your company)</option>
+                            <option value="IFS">IFS</option>
+                            <option value="SAP">SAP</option>
+                            <option value="Oracle">Oracle</option>
+                            <option value="Other">Other (Custom)</option>
+                        </select>
+                    </div>
+                    <div id="customCompanyFields" class="space-y-6 mt-6 hidden">
+                        <div>
+                            <label for="sourceCompanyName" class="block text-sm font-medium text-slate-700">My Company Name<span class="text-red-500">*</span></label>
+                            <input type="text" id="sourceCompanyName" name="sourceCompanyName" placeholder="e.g., Your company"
+                                   class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                        </div>
+                        <div>
+                            <label for="sourceCompanyWebsite" class="block text-sm font-medium text-slate-700">My Company Website (URL)<span class="text-red-500">*</span></label>
+                            <input type="text" id="sourceCompanyWebsite" name="sourceCompanyWebsite" placeholder="e.g., www.yourcompany.com"
+                                   class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Section -->
+                <div class="p-6 border border-gray-200 rounded-xl">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Customer</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="customerName" class="block text-sm font-medium text-slate-700">Customer Name<span class="text-red-500">*</span></label>
+                            <input type="text" id="customerName" name="customerName" placeholder="John Doe" required
+                                   class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                        </div>
+                        <div>
+                            <label for="customerBusiness" class="block text-sm font-medium text-slate-700">Customer Business<span class="text-red-500">*</span></label>
+                            <input type="text" id="customerBusiness" name="customerBusiness" placeholder="E-commerce logistics" required
+                                   class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                        </div>
+                    </div>
+        
+                    <div>
+                        <label for="customerWebsite" class="block text-sm font-medium text-slate-700">Customer Website (URL)</label>
+                        <input type="text" id="customerWebsite" name="customerWebsite" placeholder="www.example.com"
+                               class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                    </div>
+
+                    <div>
+                        <label for="annualReportUrl" class="block text-sm font-medium text-slate-700">Customer Annual Report (URL)</label>
+                        <input type="text" id="annualReportUrl" name="annualReportUrl" placeholder="Link to the customer's latest annual report"
+                               class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                    </div>
+        
+                    <div>
+                        <label for="linkedinProfile" class="block text-sm font-medium text-slate-700">Customer LinkedIn Profile (URL)</label>
+                        <input type="text" id="linkedinProfile" name="linkedinProfile" placeholder="linkedin.com/in/johndoe"
+                               class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                    </div>
+        
+                    <div>
+                        <label for="personalityType" class="block text-sm font-medium text-slate-700">Customer Personality Type (optional)</label>
+                        <select id="personalityType" name="personalityType" class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                            <option value="">(Select one)</option>
+                            <option value="Analytical">Analytical (Loves data, details, and logic)</option>
+                            <option value="Driver">Driver (Goal-oriented, decisive, and values efficiency)</option>
+                            <option value="Amiable">Amiable (Relationship-focused, values trust and harmony)</option>
+                            <option value="Expressive">Expressive (Enthusiastic, innovative, and loves the big picture)</option>
+                        </select>
+                    </div>
+        
+                    <div>
+                        <label for="competitorSolution" class="block text-sm font-medium text-slate-700">Competitor Product (optional)</label>
+                        <textarea id="competitorSolution" name="competitorSolution" rows="2" placeholder="e.g., SAP, Oracle, NetSuite"
+                                  class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="messageLength" class="block text-sm font-medium text-slate-700">Message Length<span class="text-red-500">*</span></label>
+                        <select id="messageLength" name="messageLength" required class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
+                            <option value="short">Short and to the Point</option>
+                            <option value="detailed">Detailed</option>
+                            <option value="surprise">Surprise me</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <button type="submit" id="generateBtn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-medium text-white shadow-sm btn-primary">
+                    Generate Emails
+                </button>
+            </form>
+            
+            <!-- Loading Indicator -->
+            <div id="loading" class="mt-8 text-center hidden">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-t-4 border-blue-600 border-opacity-25 mx-auto"></div>
+                <p class="mt-4 text-slate-600">Generating pitches, please wait...</p>
+            </div>
+    
+            <!-- Email Output Container -->
+            <div id="results" class="mt-8 hidden">
+                <!-- Sales Manager Analysis -->
+                <div id="managerAnalysis" class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8 hidden">
+                    <h2 class="text-xl font-bold text-blue-800 mb-2">Sales Manager's Analysis</h2>
+                    <p id="analysisText" class="text-blue-700"></p>
+                </div>
+    
+                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4">Generated Email Pitches</h2>
+                <div id="emailContainer" class="space-y-6"></div>
+            </div>
+            
+            <!-- Public Emails Section -->
+            <div class="mt-12 pt-8 border-t border-slate-300">
+                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4">Public Email History</h2>
+                <div id="publicEmails" class="space-y-6">
+                    <p class="text-slate-500 text-center">Loading public email history...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Page Content -->
+        <div id="helpContent" class="hidden">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-bold text-slate-800">Help & FAQ</h1>
+                <p class="mt-2 text-lg text-slate-500">How to use this tool and answers to common questions.</p>
+                <button id="hideHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block">Back to Agent</button>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">How to Use the Agent</h2>
+                    <p class="text-slate-600">
+                        The AI Sales Agent is designed to help you quickly generate personalized, high-quality email pitches with a variety of tones. By providing key information about a customer and their company, the agent can craft emails that are tailored, relevant, and more likely to get a response.
+                    </p>
+                    <ul class="list-decimal list-inside text-slate-600 mt-4 space-y-2">
+                        <li>**Fill in the Form:** The form is where you'll provide all the information the AI needs to generate the best email drafts. Inputs like **Customer Website** and **Customer LinkedIn Profile** are optional but highly recommended to get the most accurate results.</li>
+                        <li>**Select Personality Type:** This is a powerful feature that influences the AI's recommendation. Selecting a personality type helps the agent choose the best tone to match the customer's communication style.</li>
+                        <li>**Generate Emails:** Click the **"Generate Emails"** button. The AI will process your input and, in a few moments, present three email drafts: Professional, Engaging, and Relaxed.</li>
+                        <li>**Review the Analysis:** The **"Sales Manager's Analysis"** box will appear at the top. This provides a recommendation on which tone is best suited for the customer based on the personality type you selected.</li>
+                        <li>**Select & Copy:** Review the generated emails. Once you find the one you like, simply click the **"Copy"** button next to it. The email's subject and body will be copied to your clipboard, ready to be pasted into your email client.</li>
+                    </ul>
+                </div>
+
+                <hr class="border-t border-slate-300">
+
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Frequently Asked Questions</h2>
+                    <div class="space-y-4">
+                        <p class="font-bold text-slate-800">Q: Why are there three different email tones?</p>
+                        <p class="text-slate-600">
+                            **A:** Different people respond to different communication styles. The **Professional** tone is ideal for analytical personalities, while the **Engaging** tone is best for expressive customers. The **Relaxed** tone is a great, brief option that respects the customer's time.
+                        </p>
+                        <p class="font-bold text-slate-800">Q: How does the "Personality Type" input work?</p>
+                        <p class="text-slate-600">
+                            **A:** This feature is based on common personality frameworks used in sales. It helps the AI recommend the most effective tone and communication style for your customer, increasing your chances of getting a positive response.
+                        </p>
+                        <p class="font-bold text-slate-800">Q: Is my data saved and shared?</p>
+                        <p class="text-slate-600">
+                            **A:** The customer's name and business, along with the best tone recommendation, are saved to a public database so you can see a history of generated emails from other users. This is for collaborative purposes only and does not include any private or sensitive information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, onSnapshot, collection, query, orderBy, limit, serverTimestamp, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // UI Navigation
+        const mainContent = document.getElementById('mainContent');
+        const helpContent = document.getElementById('helpContent');
+        const showHelpBtn = document.getElementById('showHelpBtn');
+        const hideHelpBtn = document.getElementById('hideHelpBtn');
+        const customCompanyFields = document.getElementById('customCompanyFields');
+        const sourceCompanySelector = document.getElementById('sourceCompanySelector');
+        const sourceCompanyNameInput = document.getElementById('sourceCompanyName');
+        const sourceCompanyWebsiteInput = document.getElementById('sourceCompanyWebsite');
+
+        showHelpBtn.addEventListener('click', () => {
+            mainContent.classList.add('hidden');
+            helpContent.classList.remove('hidden');
+        });
+
+        hideHelpBtn.addEventListener('click', () => {
+            helpContent.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        });
+
+        sourceCompanySelector.addEventListener('change', (e) => {
+            if (e.target.value === 'Other') {
+                customCompanyFields.classList.remove('hidden');
+                sourceCompanyNameInput.setAttribute('required', 'required');
+                sourceCompanyWebsiteInput.setAttribute('required', 'required');
+            } else {
+                customCompanyFields.classList.add('hidden');
+                sourceCompanyNameInput.removeAttribute('required');
+                sourceCompanyWebsiteInput.removeAttribute('required');
+            }
+        });
+
+        // Global variables for Firebase configuration
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' && Object.keys(JSON.parse(__firebase_config)).length !== 0 ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let app, db, auth, userId = null;
+        let isFirebaseActive = false;
+        
+        // Only initialize Firebase if a valid config is provided
+        if (firebaseConfig) {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                isFirebaseActive = true;
+                
+                // Only set up auth listeners if Firebase is active
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('userIdDisplay').textContent = `Your User ID: ${userId}`;
+                        document.getElementById('userIdDisplay').classList.remove('hidden');
+                        setupPublicHistoryListener();
+                    } else {
+                        if (initialAuthToken) {
+                            try {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } catch (error) {
+                                console.error("Error signing in with custom token:", error);
+                                await signInAnonymously(auth);
+                            }
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+
+            } catch (e) {
+                console.error("Firebase initialization failed:", e);
+                isFirebaseActive = false;
+            }
+        }
+        
+        if (!isFirebaseActive) {
+            console.warn("Firebase is not active. The public email history feature will be disabled.");
+            document.getElementById('publicEmails').innerHTML = `
+                <div class="p-4 bg-yellow-100 rounded-md border border-yellow-200 text-yellow-800 text-center">
+                    <p>Public email history is unavailable when running locally.</p>
+                </div>
+            `;
+        }
+        
+        // Sales quotes for inspiration
+        const salesQuotes = [
+            "Your most unhappy customers are your greatest source of learning. - Bill Gates",
+            "The best way to predict the future is to create it. - Peter Drucker",
+            "A sale is not something you do to someone, it's something you do with someone. - Zig Ziglar",
+            "Don't sell a product, sell an outcome. - Mark Cuban",
+            "The secret to getting ahead is getting started. - Mark Twain",
+            "The key to success is to focus on goals, not obstacles. - Anonymous",
+            "You miss 100% of the shots you don’t take. - Wayne Gretzky",
+            "Either you run the day, or the day runs you. - Jim Rohn",
+            "If you are not taking care of your customer, your competitor will. - Bob Hooey",
+            "The best salespeople are great listeners. - Brian Tracy",
+            "Habit is the intersection of knowledge, skill, and desire. - Stephen Covey",
+            "Be proactive. The most important freedom is the freedom to choose your response to life's events. - Stephen Covey",
+            "Begin with the end in mind. Visualize your destination so you know what you are working towards. - Stephen Covey",
+            "Put first things first. Discipline is the ability to prioritize your actions around your purpose. - Stephen Covey",
+            "Seek first to understand, then to be understood. Listen with the intent to understand, not the intent to reply. - Stephen Covey",
+            "Think win-win. Look for solutions that benefit both you and the customer. - Stephen Covey",
+            "Synergize. Two heads are better than one; work together to achieve greater results. - Stephen Covey",
+            "Sharpen the saw. Take time for self-care to maintain your most valuable asset: yourself. - Stephen Covey",
+            "The only way on earth to influence other people is to talk about what they want and show them how to get it. - Dale Carnegie",
+            "A person's name is to that person the sweetest and most important sound in any language. - Dale Carnegie",
+            "Remember that a man's heart, like a lock, can be opened in only one way, and that is to talk in terms of what he wants. - Dale Carnegie",
+            "If you want to gather honey, don't kick over the beehive. - Dale Carnegie",
+            "Show genuine interest. Smile and be a good listener. - Dale Carnegie",
+            "Show respect for the other person’s opinions. Never say, 'You're wrong.' - Dale Carnegie"
+        ];
+        
+        const coachingTips = [
+            `**Begin with the end in mind.** Before you draft an email, what is your ultimate goal? What is the customer's most likely challenge? When you know the destination, every word you use will have purpose.`,
+            `**Seek first to understand, then to be understood.** Your customer is a person with a problem. Listen more than you talk. Ask insightful questions that show you genuinely care about their business, not just about making a sale.`,
+            `**Think win-win.** A great deal leaves both parties feeling successful. Your goal is to find a solution that helps the customer solve their challenge while also being a strong fit for your product. It's about collaboration, not coercion.`,
+            `**Be proactive.** Don't wait for a response. Take initiative to research the customer and their business. The AI agent can help, but your personal touch and preparation make all the difference.`,
+            `**Talk in terms of what they want.** Dale Carnegie taught us that the only way to influence people is to talk about what they want and show them how to get it. Frame your entire pitch around their needs, not your product's features.`,
+            `**Remember their name.** A person's name is the sweetest and most important sound to them. Use it naturally and respectfully in your communications to build a genuine connection.`,
+            `**Listen effectively.** You can make more friends in two months by being genuinely interested in other people than you can in two years by trying to get other people interested in you. Be a great listener.`,
+            `**Don't criticize, condemn, or complain.** Start your interaction on a positive note. Find something to genuinely admire about their company or recent news, and build from there.`,
+            `**Handle objections gracefully.** Don't tell them they're wrong. Acknowledge their opinion, show respect, and then offer an alternative perspective. It's about finding a path forward together.`,
+            `**Create a sense of urgency, but in a positive way.** Focus on the value they're missing out on by not acting, not on the pressure of a deadline. "The sooner you start, the sooner you'll see results."`
+        ];
+        
+        const animationClasses = ['animate-fade-in', 'animate-slide-up', 'animate-zoom-in'];
+        
+        // Data for different company products
+        const companyData = {
+            "IFS": {
+                name: "IFS",
+                website: "https://www.ifs.com",
+                highlights: [
+                    "A single, unified cloud platform for ERP, Enterprise Asset Management (EAM), and Field Service Management (FSM).",
+                    "Industry-specific solutions tailored for industries like manufacturing, construction, energy, and aerospace.",
+                    "Advanced project management capabilities with real-time tracking, resource allocation, and cost control.",
+                    "Robust supply chain management to optimize inventory, procurement, and logistics.",
+                    "Mobile-first design for field technicians and a user-friendly, adaptable interface.",
+                    "Built-in analytics and business intelligence for data-driven decision making.",
+                    "Servitization enablement to help companies transition from selling products to selling services."
+                ]
+            },
+            "SAP": {
+                name: "SAP S/4HANA",
+                website: "https://www.sap.com/products/s4hana-erp.html",
+                highlights: [
+                    "An intelligent, integrated ERP system that runs on an in-memory database to enable real-time decision-making.",
+                    "Combines traditional ERP with advanced technologies like AI and machine learning.",
+                    "Provides a comprehensive suite of business applications for finance, supply chain, and more.",
+                    "Known for its deep functionality and a wide array of modules for complex business processes.",
+                    "Helps large enterprises manage global operations and scale across various industries.",
+                    "Focuses on a streamlined digital core with simplified data models."
+                ]
+            },
+            "Oracle": {
+                name: "Oracle Cloud ERP",
+                website: "https://www.oracle.com/erp/",
+                highlights: [
+                    "A complete and modern ERP system with built-in AI, machine learning, and advanced analytics.",
+                    "Provides a full suite of applications for finance, procurement, project management, and risk management.",
+                    "Offers continuous innovation with quarterly updates and a modern user interface.",
+                    "Known for its strong financial management and robust reporting capabilities.",
+                    "Helps businesses automate processes, increase agility, and gain a competitive advantage.",
+                    "Provides a unified data model for a single source of truth across the enterprise."
+                ]
+            },
+            "Other": {
+                name: "",
+                website: "",
+                highlights: [
+                    "A comprehensive business solution designed to streamline your operations and drive growth.",
+                    "Integrates key business functions like finance, operations, and supply chain management on a single platform.",
+                    "Provides real-time visibility and data-driven insights to support smarter decision-making.",
+                    "Offers a flexible and scalable architecture that adapts to your unique industry and business needs.",
+                    "Automates routine tasks and workflows to boost efficiency and productivity.",
+                    "Features a user-centric design that enhances user adoption and simplifies complex processes."
+                ]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const quoteTextElement = document.getElementById('quoteText');
+            const randomQuote = salesQuotes[Math.floor(Math.random() * salesQuotes.length)];
+            const randomAnimationQuote = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+            quoteTextElement.textContent = randomQuote;
+            quoteTextElement.classList.add(randomAnimationQuote);
+
+            const coachingTipElement = document.getElementById('coachingTip');
+            const randomTip = coachingTips[Math.floor(Math.random() * coachingTips.length)];
+            const randomAnimationTip = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+            coachingTipElement.innerHTML = randomTip;
+            coachingTipElement.classList.add(randomAnimationTip);
+        });
+
+        function setupPublicHistoryListener() {
+            // Check if Firebase is active before setting up the listener
+            if (!isFirebaseActive || !userId) {
+                console.warn("Firebase is not active or user not authenticated. Skipping public history listener.");
+                return;
+            }
+
+            const publicCollectionPath = `artifacts/${appId}/public/data/emails`;
+            const q = query(collection(db, publicCollectionPath), orderBy('timestamp', 'desc'), limit(10));
+            onSnapshot(q, (querySnapshot) => {
+                const publicEmailsContainer = document.getElementById('publicEmails');
+                publicEmailsContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    publicEmailsContainer.innerHTML = '<p class="text-slate-500 text-center">No public emails generated yet.</p>';
+                    return;
+                }
+                querySnapshot.forEach((doc) => {
+                    const emailData = doc.data();
+                    const emailCard = `
+                        <div class="bg-slate-50 rounded-lg p-4 shadow-md border border-slate-100">
+                            <p class="text-sm font-medium text-slate-500 mb-2">Generated by: ${emailData.userId}</p>
+                            <p class="font-bold text-slate-800">Customer: ${emailData.customerName}</p>
+                            <p class="font-bold text-slate-800">Business: ${emailData.customerCompany}</p>
+                            <p class="font-bold text-slate-800 mt-2">Best Tone: ${emailData.bestTone}</p>
+                        </div>
+                    `;
+                    publicEmailsContainer.innerHTML += emailCard;
+                });
+            }, (error) => {
+                console.error("Error listening to public emails:", error);
+                document.getElementById('publicEmails').innerHTML = '<p class="text-red-500 text-center">Failed to load public history. Please try again later.</p>';
+            });
+        }
+
+        // Helper function to add a protocol if missing
+        function addProtocol(url) {
+            if (!url) return '';
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                return url;
+            }
+            return `https://${url}`;
+        }
+
+        document.getElementById('emailForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const selectedCompany = form.sourceCompanySelector.value;
+            let myCompanyName = selectedCompany;
+            let myCompanyWebsite = companyData[selectedCompany].website;
+            let productHighlights = companyData[selectedCompany].highlights;
+            
+            if (selectedCompany === 'Other') {
+                myCompanyName = form.sourceCompanyName.value;
+                myCompanyWebsite = addProtocol(form.sourceCompanyWebsite.value);
+                productHighlights = companyData['Other'].highlights;
+            }
+
+            const customerName = form.customerName.value;
+            const customerCompany = form.customerBusiness.value;
+            const customerWebsite = form.customerWebsite.value;
+            const customerLinkedinProfile = form.linkedinProfile.value;
+            const customerPersonalityType = form.personalityType.value;
+            const competitorSolution = form.competitorSolution.value;
+            const annualReportUrl = form.annualReportUrl.value;
+            const messageLength = form.messageLength.value;
+            
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('emailContainer').innerHTML = '';
+            document.getElementById('managerAnalysis').classList.add('hidden');
+
+            const highlightsList = productHighlights.map(h => `- ${h}`).join('\n');
+            
+            let annualReportContent = '';
+            let websiteContent = '';
+
+            const userPrompt = `
+                I am a sales representative for ${myCompanyName} and our website is ${myCompanyWebsite}. My goal is to send a cold email to a customer.
+                I need you to generate three different email drafts in three distinct tones: Professional, Engaging, and Relaxed.
+
+                Here is the customer's information:
+                - Customer Name: ${customerName}
+                - Customer Business: ${customerCompany}
+                - Customer Website: ${customerWebsite}
+                - Customer LinkedIn Profile: ${customerLinkedinProfile}
+                - Customer Personality Type: ${customerPersonalityType || 'Not specified'}
+                - Competitor Solution (currently used): ${competitorSolution || 'Not specified'}
+                - Customer Annual Report content: ${annualReportContent || 'Not provided'}
+
+                ${myCompanyName} solutions key highlights:
+                ${highlightsList}
+                
+                Additional context from their website search:
+                ${websiteContent}
+
+                For each email, please act as a sales agent. The emails should highlight how ${myCompanyName}'s capabilities can solve their specific business pain points, and if a competitor solution is provided, you should briefly pitch the benefits of ${myCompanyName} over that competitor's product. Use the website context to align your pitch with their stated goals, mission, or recent activities.
+
+                For the 'Professional' tone, be formal, data-driven, and focus on ROI.
+                For the 'Engaging' tone, be more conversational, use storytelling, and focus on future-state benefits.
+                For the 'Relaxed' tone, be friendly, brief, and to the point, respecting their time.
+
+                The email body should be formatted using HTML tags such as <p>, <strong>, and <br> to create a professional and structured email.
+
+                Please provide the output in a JSON format. The JSON should be a single array containing three objects, one for each tone. Each object must have three properties: 'tone', 'subject', and 'body'.
+            `;
+
+            let lengthConstraint = '';
+            if (messageLength === 'short') {
+                lengthConstraint = 'Be very concise, around 50-75 words.';
+            } else if (messageLength === 'detailed') {
+                lengthConstraint = 'Be comprehensive and detailed, around 200-300 words.';
+            } else { // Surprise me
+                lengthConstraint = 'Vary the length and structure of each email to provide different options.';
+            }
+            
+            const finalPrompt = userPrompt + `\n\nFor the length of the email body: ${lengthConstraint}`;
+
+            try {
+                const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+                
+                if (isLocal) {
+                    console.error("Local execution detected. API call to a serverless function is not supported. Please deploy the app to Vercel to enable this functionality.");
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('results').classList.remove('hidden');
+                    const errorMessage = `
+                        <div class="mt-8 text-center text-red-600 p-4 bg-red-100 border border-red-200 rounded-md">
+                            <p class="font-bold">Feature Unavailable Locally!</p>
+                            <p class="text-sm mt-1">AI email generation requires deployment to a serverless platform like Vercel.</p>
+                            <p class="text-sm mt-1">Please deploy your project to Vercel to use this feature.</p>
+                        </div>
+                    `;
+                    document.getElementById('results').innerHTML = errorMessage;
+                    return;
+                }
+                
+                const payload = { prompt: finalPrompt };
+                const apiUrl = '/api/generate';
+
+                let retryCount = 0;
+                const maxRetries = 3;
+                const baseDelay = 1000;
+
+                const callApi = async () => {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429 && retryCount < maxRetries) {
+                        retryCount++;
+                        const delay = baseDelay * Math.pow(2, retryCount - 1);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return callApi();
+                    }
+
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        throw new Error(`API error: ${response.status} ${response.statusText} - ${errorBody}`);
+                    }
+                    return response.json();
+                };
+
+                const result = await callApi();
+                const jsonString = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!jsonString) {
+                    throw new Error("Invalid response from API. Please try again.");
+                }
+                const emails = JSON.parse(jsonString);
+
+                const bestTone = getBestTone(customerPersonalityType);
+                if (isFirebaseActive) {
+                    await saveEmailToFirestore(customerName, customerCompany, bestTone);
+                }
+
+                const emailContainer = document.getElementById('emailContainer');
+                emailContainer.innerHTML = ''; // Clear previous emails
+
+                emails.forEach(email => {
+                    const isRecommended = email.tone === bestTone;
+                    const cardClass = isRecommended ? 'bg-blue-50 border-blue-200 shadow-lg' : 'bg-slate-50 border-slate-100 shadow-md';
+                    const titleClass = isRecommended ? 'text-blue-800' : 'text-slate-700';
+                    const mailtoLink = `mailto:?subject=${encodeURIComponent(email.subject)}&body=${encodeURIComponent(email.body.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n\n').replace(/<[^>]*>/g, ''))}`;
+
+                    const emailCard = `
+                        <div class="rounded-lg p-6 border ${cardClass}">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold ${titleClass}">${email.tone} Tone ${isRecommended ? '<span class="text-sm font-normal text-blue-600">(Recommended)</span>' : ''}</h3>
+                                <div class="flex space-x-2">
+                                    <a href="${mailtoLink}" class="mail-btn flex items-center p-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200" title="Send via email client">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                        </svg>
+                                        Send Email
+                                    </a>
+                                    <button type="button" class="copy-btn flex items-center p-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200" data-subject="${email.subject}" data-body="${email.body}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
+                                        </svg>
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="font-bold text-slate-800">Subject: <span class="subject">${email.subject}</span></p>
+                            <div class="mt-2 text-slate-600 body-html">${email.body}</div>
+                        </div>
+                    `;
+                    emailContainer.innerHTML += emailCard;
+                });
+                
+                // Add event listeners to the new copy buttons
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const subject = button.dataset.subject;
+                        const body = button.dataset.body;
+                        copyToClipboard(subject, body, button);
+                    });
+                });
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('results').classList.remove('hidden');
+                displayAnalysis(customerPersonalityType, bestTone);
+
+            } catch (error) {
+                console.error('Error generating emails:', error);
+                document.getElementById('loading').classList.add('hidden');
+                const errorMessage = `
+                    <div class="mt-8 text-center text-red-600 p-4 bg-red-100 border border-red-200 rounded-md">
+                        <p>An error occurred. Please check your inputs and try again.</p>
+                        <p class="text-sm mt-1">${error.message}</p>
+                    </div>
+                `;
+                document.getElementById('results').innerHTML = errorMessage;
+                document.getElementById('results').classList.remove('hidden');
+            }
+        });
+
+        // Function to determine the best tone based on personality type
+        function getBestTone(customerPersonalityType) {
+            switch(customerPersonalityType) {
+                case 'Analytical':
+                    return 'Professional';
+                case 'Driver':
+                    return 'Professional';
+                case 'Amiable':
+                    return 'Engaging';
+                case 'Expressive':
+                    return 'Engaging';
+                default:
+                    return 'Relaxed'; // Default to a less-intrusive tone
+            }
+        }
+        
+        // Function to display the sales manager analysis
+        function displayAnalysis(customerPersonalityType, recommendedTone) {
+            const analysisText = document.getElementById('analysisText');
+            let text = '';
+            if (customerPersonalityType) {
+                text = `Based on the customer's personality type (${customerPersonalityType}), the best approach is to use a <span class="font-semibold text-blue-900">${recommendedTone}</span> tone. This tone aligns with their communication style, helping you build rapport and effectively convey your message.`;
+            } else {
+                text = `No personality type was selected. We recommend starting with a <span class="font-semibold text-blue-900">${recommendedTone}</span> tone to be brief and respectful of their time.`;
+            }
+            analysisText.innerHTML = text;
+            document.getElementById('managerAnalysis').classList.remove('hidden');
+        }
+
+        async function saveEmailToFirestore(customerName, customerCompany, bestTone) {
+            if (!userId) {
+                console.error("No user ID found, cannot save to Firestore.");
+                return;
+            }
+
+            const publicCollectionPath = `artifacts/${appId}/public/data/emails`;
+            const docRef = await addDoc(collection(db, publicCollectionPath), {
+                userId: userId,
+                customerName: customerName,
+                customerCompany: customerCompany,
+                bestTone: bestTone,
+                timestamp: serverTimestamp(),
+            });
+            console.log("Document successfully written with ID: ", docRef.id);
+        }
+
+        // Function to copy email content to clipboard
+        async function copyToClipboard(subject, body, button) {
+            // Remove HTML tags from the body for clean text copy
+            const textToCopy = `Subject: ${subject}\n\n${body.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n\n').replace(/<[^>]*>/g, '')}`;
+
+            try {
+                // Use the modern clipboard API
+                await navigator.clipboard.writeText(textToCopy);
+                
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Copied!
+                `;
+                setTimeout(() => {
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
+                        </svg>
+                        Copy
+                    `;
+                }, 2000);
+
+            } catch (err) {
+                // Fallback for older browsers or if modern API fails
+                console.error('Failed to copy using modern API. Falling back to execCommand:', err);
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed'; // Avoid scrolling
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                     button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Copied!
+                    `;
+                    setTimeout(() => {
+                        button.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
+                            </svg>
+                            Copy
+                        `;
+                    }, 2000);
+                } catch (execErr) {
+                    console.error('Fallback copy method also failed:', execErr);
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
