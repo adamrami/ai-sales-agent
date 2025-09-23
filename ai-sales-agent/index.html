@@ -552,9 +552,6 @@
                 ${myCompanyName} solutions key highlights:
                 ${highlightsList}
                 
-                Additional context from their website search:
-                ${websiteContent}
-
                 For each email, please act as a sales agent. The emails should highlight how ${myCompanyName}'s capabilities can solve their specific business pain points, and if a competitor solution is provided, you should briefly pitch the benefits of ${myCompanyName} over that competitor's product. Use the website context to align your pitch with their stated goals, mission, or recent activities.
 
                 For the 'Professional' tone, be formal, data-driven, and focus on ROI.
@@ -578,52 +575,23 @@
             const finalPrompt = userPrompt + `\n\nFor the length of the email body: ${lengthConstraint}`;
 
             try {
-                const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
-                
-                if (isLocal) {
-                    console.error("Local execution detected. API call to a serverless function is not supported. Please deploy the app to Vercel to enable this functionality.");
-                    document.getElementById('loading').classList.add('hidden');
-                    document.getElementById('results').classList.remove('hidden');
-                    const errorMessage = `
-                        <div class="mt-8 text-center text-red-600 p-4 bg-red-100 border border-red-200 rounded-md">
-                            <p class="font-bold">Feature Unavailable Locally!</p>
-                            <p class="text-sm mt-1">AI email generation requires deployment to a serverless platform like Vercel.</p>
-                            <p class="text-sm mt-1">Please deploy your project to Vercel to use this feature.</p>
-                        </div>
-                    `;
-                    document.getElementById('results').innerHTML = errorMessage;
-                    return;
-                }
-                
                 const payload = { prompt: finalPrompt };
                 const apiUrl = '/api/generate';
 
-                let retryCount = 0;
-                const maxRetries = 3;
-                const baseDelay = 1000;
+                document.getElementById('loading').classList.remove('hidden');
 
-                const callApi = async () => {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-                    if (response.status === 429 && retryCount < maxRetries) {
-                        retryCount++;
-                        const delay = baseDelay * Math.pow(2, retryCount - 1);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return callApi();
-                    }
-
-                    if (!response.ok) {
-                        const errorBody = await response.text();
-                        throw new Error(`API error: ${response.status} ${response.statusText} - ${errorBody}`);
-                    }
-                    return response.json();
-                };
-
-                const result = await callApi();
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API error: ${response.status} ${response.statusText} - ${errorBody}`);
+                }
+                
+                const result = await response.json();
                 const jsonString = result?.candidates?.[0]?.content?.parts?.[0]?.text;
 
                 if (!jsonString) {
