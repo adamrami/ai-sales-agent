@@ -529,7 +529,6 @@
                 amiableOption: "Amiable (Relationship-focused, values trust and harmony)",
                 expressiveOption: "Expressive (Enthusiastic, innovative, and loves the big picture)",
                 competitorSolutionLabel: "Competitor Product (optional)",
-                competitorSolutionPlaceholder: "e.g., SAP, Oracle, NetSuite",
                 messageLengthLabel: "Message Length",
                 shortOption: "Short and to the Point (50-75 words)",
                 moderateOption: "Moderate (120-180 words)",
@@ -861,7 +860,7 @@
                     auth = getAuth(app);
                     isFirebaseActive = true;
                     
-                    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initialAuthToken : null;
                     // Set up auth listeners
                     onAuthStateChanged(auth, async (user) => {
                         if (user) {
@@ -981,6 +980,8 @@
                 The email body should be formatted using HTML tags such as <p>, <strong>, and <br> to create a professional and structured email.
 
                 Please provide the output in a JSON format. The JSON should be a single array containing three objects, one for each tone. Each object must have three properties: 'tone', 'subject', and 'body'.
+                
+                // IMPORTANT: Generate the response in the language selected by the user: ${currentLang}
             `;
 
             let lengthConstraint = '';
