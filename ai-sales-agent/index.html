@@ -645,7 +645,6 @@
                 customerWebsiteLabel: "وب‌سایت مشتری (URL)",
                 customerWebsitePlaceholder: "www.example.com",
                 annualReportUrlLabel: "گزارش سالانه مشتری (URL)",
-                annualReportUrlPlaceholder: "رابط لآخر تقرير سنوي للعميل",
                 linkedinProfileLabel: "پروفایل لینکدین مشتری (URL)",
                 personalityTypeLabel: "نوع شخصیت مشتری (اختیاری)",
                 selectOneOption: "(یکی را انتخاب کنید)",
@@ -674,8 +673,7 @@
                 analysisBase: "بر اساس نوع شخصیت مشتری",
                 analysisRecommendation: "بهترین رویکرد استفاده از لحن",
                 analysisTone: "است",
-                analysisConclusion: "این لحن با سبک ارتباطی آنها هماهنگ است و به شما کمک می‌کند تا رابطه برقرار کرده و پیام خود را به طور موثر منتقل کنید.",
-                analysisNoPersonality: "نوع شخصیت انتخاب نشده است. توصیه می‌کنیم با لحن"
+                analysisConclusion: "این لحن با سبک ارتباطی آنها هماهنگ است و به شما کمک می‌کند تا رابطه برقرار کرده و پیام خود را به طور موثر منتقل کنید."
             }
         };
 
@@ -787,8 +785,8 @@
             const coachingTipElement = document.getElementById('coachingTip');
             
             // 1. Quotes
-            const randomQuote = salesQuotes[Math.floor(Math.random() * salesQuotes.length)];
-            const randomAnimationQuote = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+            var randomQuote = salesQuotes[Math.floor(Math.random() * salesQuotes.length)];
+            var randomAnimationQuote = animationClasses[Math.floor(Math.random() * animationClasses.length)];
             
             if (quoteTextElement) {
                 // Clear previous classes before adding new one to reset animation
@@ -799,15 +797,15 @@
             }
 
             // 2. Coaching Tips
-            const randomTip = coachingTips[Math.floor(Math.random() * coachingTips.length)];
-            const randomAnimationTip = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+            var randomTip = coachingTips[Math.floor(Math.random() * coachingTips.length)];
+            var randomAnimationQuote = animationClasses[Math.floor(Math.random() * animationClasses.length)];
 
             if (coachingTipElement) {
                 // Clear previous classes before adding new one to reset animation
                 coachingTipElement.className = 'text-gray-600 italic';
                 void coachingTipElement.offsetWidth; // Trigger reflow for animation reset
                 coachingTipElement.innerHTML = randomTip;
-                coachingTipElement.classList.add(randomAnimationTip);
+                coachingTipElement.classList.add(randomAnimationQuote);
             }
         }
         
@@ -974,7 +972,7 @@
                 
                 *Crucial Instruction:* Identify the customer's current role/title based on the information provided, or infer a likely executive role (e.g., Head of Operations, CFO) based on their business. 
                 
-                The pitch must be tailored to the **specific priorities of that role**. For example, if the role is 'CFO', focus on cost reduction and ROI. If the role is 'Head of Supply Chain', focus on efficiency and risk reduction. In the message, clearly reference the role and why the proposed value is vital for their job.
+                The pitch must be tailored to the **specific priorities of that role**. For example, if the role is 'CFO', focus on cost reduction and ROI. If the role is 'Head of Supply Chain', focus on efficiency and risk reduction. In the message, clearly reference the role and why the proposed value is vital for your job.
 
                 For the 'Professional' tone, be formal, data-driven, and focus on ROI.
                 For the 'Engaging' tone, be more conversational, use storytelling, and focus on future-state benefits.
