@@ -73,13 +73,13 @@
             <div class="text-center mb-4">
                 <div class="flex items-center justify-center space-x-4">
                     <img src="https://icons.iconarchive.com/icons/noctuline/wall-e/128/EVE-icon.png" alt="EVE Icon" class="w-12 h-12" />
-                    <h1 class="text-4xl font-bold text-slate-800">AI Sales Agent</h1>
+                    <h1 class="text-4xl font-bold text-slate-800" data-lang="appTitle">AI Sales Agent</h1>
                 </div>
-                <p class="mt-2 text-lg text-slate-500">Generate personalized emails with three distinct tones.</p>
-                <button id="showHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block">Help & FAQ</button>
+                <p class="mt-2 text-lg text-slate-500" data-lang="appSubtitle">Generate personalized emails with three distinct tones.</p>
+                <button id="showHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block" data-lang="helpFAQ">Help & FAQ</button>
             </div>
             
-            <p id="userIdDisplay" class="text-sm text-slate-400 text-center mb-6 hidden">Your User ID: </p>
+            <p id="userIdDisplay" class="text-sm text-slate-400 text-center mb-6 hidden" data-lang="yourUserID">Ditt Användar-ID: </p>
             
             <!-- Random Sales Quote Section -->
             <div id="quoteSection" class="mt-8 mb-8 p-6 bg-blue-100 rounded-xl text-center shadow-md">
@@ -88,61 +88,79 @@
 
             <!-- Coaching Corner -->
             <div id="coachingCorner" class="mt-12 p-8 bg-gray-50 border border-gray-200 rounded-xl animate-fade-in">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Coaching Corner</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4" data-lang="coachingCornerTitle">Coaching Corner</h2>
                 <p id="coachingTip" class="text-gray-600 italic"></p>
             </div>
     
             <!-- Input Form -->
             <form id="emailForm" class="space-y-6">
+                <!-- Language Selector -->
+                <div class="p-6 border border-gray-200 rounded-xl bg-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4" data-lang="languageSelectorTitle">Språk</h2>
+                    <label for="languageSelector" class="block text-sm font-medium text-slate-700" data-lang="selectLanguageLabel">Välj Språk</label>
+                    <select id="languageSelector" name="languageSelector" class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-white" onchange="changeLanguage(this.value)">
+                        <option value="sv" selected>Svenska</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fa">فارسی (Persiska)</option>
+                    </select>
+                </div>
+                
                 <!-- My Info Section -->
                 <div class="p-6 border border-gray-200 rounded-xl">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">My Info</h2>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4" data-lang="myInfoTitle">Mina Uppgifter</h2>
                     <div id="myInfoForm">
                         <div class="space-y-6">
                             <div>
-                                <label for="myName" class="block text-sm font-medium text-slate-700">My Name</label>
-                                <input type="text" id="myName" name="myName" placeholder="e.g., John Smith"
+                                <label for="myName" class="block text-sm font-medium text-slate-700" data-lang="myNameLabel">Mitt Namn</label>
+                                <input type="text" id="myName" name="myName" data-lang-placeholder="myNamePlaceholder" placeholder="t.ex. John Smith"
                                        class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                             </div>
                             <div>
-                                <label for="myRole" class="block text-sm font-medium text-slate-700">My Role</label>
-                                <input type="text" id="myRole" name="myRole" placeholder="e.g., Sales Manager"
+                                <label for="myRole" class="block text-sm font-medium text-slate-700" data-lang="myRoleLabel">Min Roll</label>
+                                <input type="text" id="myRole" name="myRole" data-lang-placeholder="myRolePlaceholder" placeholder="t.ex. Försäljningschef"
                                        class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                             </div>
-                            <button type="button" id="saveMyInfoBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white shadow-sm bg-indigo-600 hover:bg-indigo-700">
-                                Save My Info
+                            <div>
+                                <label for="myServices" class="block text-sm font-medium text-slate-700" data-lang="myServicesLabel">Mina Tjänster/Värdeerbjudande</label>
+                                <textarea id="myServices" name="myServices" rows="3" data-lang-placeholder="myServicesPlaceholder" placeholder="t.ex. Vi erbjuder molnbaserad ERP-mjukvara med fokus på fältservice och resursoptimering."
+                                          class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input"></textarea>
+                            </div>
+                            <button type="button" id="saveMyInfoBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white shadow-sm bg-indigo-600 hover:bg-indigo-700" data-lang="saveMyInfoButton">
+                                Spara Mina Uppgifter
                             </button>
                         </div>
                     </div>
                     <div id="myInfoSaved" class="hidden">
-                        <p class="text-slate-600">My Name: <span id="savedMyName" class="font-bold"></span></p>
-                        <p class="text-slate-600">My Role: <span id="savedMyRole" class="font-bold"></span></p>
-                        <button type="button" id="changeMyInfoBtn" class="text-sm font-medium text-blue-600 hover:underline mt-2">Change</button>
+                        <p class="text-slate-600"><span data-lang="myNameLabel">Mitt Namn</span>: <span id="savedMyName" class="font-bold"></span></p>
+                        <p class="text-slate-600"><span data-lang="myRoleLabel">Min Roll</span>: <span id="savedMyRole" class="font-bold"></span></p>
+                        <p class="text-slate-600" data-lang="myServicesLabel">Mina Tjänster/Värdeerbjudande: <span id="savedMyServices" class="font-bold"></span></p>
+                        <button type="button" id="changeMyInfoBtn" class="text-sm font-medium text-blue-600 hover:underline mt-2" data-lang="changeButton">Ändra</button>
                     </div>
                 </div>
 
                 <!-- My Company Section -->
                 <div class="p-6 border border-gray-200 rounded-xl">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">My Company</h2>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4" data-lang="myCompanyTitle">Mitt Företag</h2>
                     <div>
-                        <label for="sourceCompanySelector" class="block text-sm font-medium text-slate-700">My Company<span class="text-red-500">*</span></label>
+                        <label for="sourceCompanySelector" class="block text-sm font-medium text-slate-700" data-lang="myCompanySelectLabel">Mitt Företag<span class="text-red-500">*</span></label>
                         <select id="sourceCompanySelector" name="sourceCompanySelector" required class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
-                            <option value="">(Select your company)</option>
+                            <option value="">(Välj ditt företag)</option>
                             <option value="IFS">IFS</option>
                             <option value="SAP">SAP</option>
                             <option value="Oracle">Oracle</option>
-                            <option value="Other">Other (Custom)</option>
+                            <option value="Other">Other (Anpassad)</option>
                         </select>
                     </div>
                     <div id="customCompanyFields" class="space-y-6 mt-6 hidden">
                         <div>
-                            <label for="sourceCompanyName" class="block text-sm font-medium text-slate-700">My Company Name<span class="text-red-500">*</span></label>
-                            <input type="text" id="sourceCompanyName" name="sourceCompanyName" placeholder="e.g., Your company"
+                            <label for="sourceCompanyName" class="block text-sm font-medium text-slate-700" data-lang="myCompanyNameLabel">Mitt Företagsnamn<span class="text-red-500">*</span></label>
+                            <input type="text" id="sourceCompanyName" name="sourceCompanyName" data-lang-placeholder="myCompanyNamePlaceholder" placeholder="t.ex. Ditt företag"
                                    class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                         </div>
                         <div>
-                            <label for="sourceCompanyWebsite" class="block text-sm font-medium text-slate-700">My Company Website (URL)<span class="text-red-500">*</span></label>
-                            <input type="text" id="sourceCompanyWebsite" name="sourceCompanyWebsite" placeholder="e.g., www.yourcompany.com"
+                            <label for="sourceCompanyWebsite" class="block text-sm font-medium text-slate-700" data-lang="myCompanyWebsiteLabel">Min Företagswebbplats (URL)<span class="text-red-500">*</span></label>
+                            <input type="text" id="sourceCompanyWebsite" name="sourceCompanyWebsite" data-lang-placeholder="myCompanyWebsitePlaceholder" placeholder="t.ex. www.dittforetag.com"
                                    class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                         </div>
                     </div>
@@ -150,94 +168,94 @@
 
                 <!-- Customer Section -->
                 <div class="p-6 border border-gray-200 rounded-xl">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Customer</h2>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4" data-lang="customerTitle">Kund</h2>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label for="customerName" class="block text-sm font-medium text-slate-700">Customer Name<span class="text-red-500">*</span></label>
-                            <input type="text" id="customerName" name="customerName" placeholder="John Doe" required
+                            <label for="customerName" class="block text-sm font-medium text-slate-700" data-lang="customerNameLabel">Kundens Namn<span class="text-red-500">*</span></label>
+                            <input type="text" id="customerName" name="customerName" data-lang-placeholder="customerNamePlaceholder" placeholder="John Doe" required
                                    class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                         </div>
                         <div>
-                            <label for="customerBusiness" class="block text-sm font-medium text-slate-700">Customer Business<span class="text-red-500">*</span></label>
-                            <input type="text" id="customerBusiness" name="customerBusiness" placeholder="E-commerce logistics" required
+                            <label for="customerBusiness" class="block text-sm font-medium text-slate-700" data-lang="customerBusinessLabel">Kundens Bransch/Verksamhet<span class="text-red-500">*</span></label>
+                            <input type="text" id="customerBusiness" name="customerBusiness" data-lang-placeholder="customerBusinessPlaceholder" placeholder="E-handelslogistik" required
                                    class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                         </div>
                     </div>
         
                     <div>
-                        <label for="customerWebsite" class="block text-sm font-medium text-slate-700">Customer Website (URL)</label>
-                        <input type="text" id="customerWebsite" name="customerWebsite" placeholder="www.example.com"
+                        <label for="customerWebsite" class="block text-sm font-medium text-slate-700" data-lang="customerWebsiteLabel">Kundens Webbplats (URL)</label>
+                        <input type="text" id="customerWebsite" name="customerWebsite" data-lang-placeholder="customerWebsitePlaceholder" placeholder="www.exempel.com"
                                class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                     </div>
 
                     <div>
-                        <label for="annualReportUrl" class="block text-sm font-medium text-slate-700">Customer Annual Report (URL)</label>
-                        <input type="text" id="annualReportUrl" name="annualReportUrl" placeholder="Link to the customer's latest annual report"
+                        <label for="annualReportUrl" class="block text-sm font-medium text-slate-700" data-lang="annualReportUrlLabel">Kundens Årsredovisning (URL)</label>
+                        <input type="text" id="annualReportUrl" name="annualReportUrl" data-lang-placeholder="annualReportUrlPlaceholder" placeholder="Länk till kundens senaste årsredovisning"
                                class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                     </div>
         
                     <div>
-                        <label for="linkedinProfile" class="block text-sm font-medium text-slate-700">Customer LinkedIn Profile (URL)</label>
-                        <input type="text" id="linkedinProfile" name="linkedinProfile" placeholder="linkedin.com/in/johndoe"
+                        <label for="linkedinProfile" class="block text-sm font-medium text-slate-700" data-lang="linkedinProfileLabel">Kundens LinkedIn-profil (URL)</label>
+                        <input type="text" id="linkedinProfile" name="linkedinProfile" data-lang-placeholder="linkedinProfilePlaceholder" placeholder="linkedin.com/in/johndoe"
                                class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
                     </div>
         
                     <div>
-                        <label for="personalityType" class="block text-sm font-medium text-slate-700">Customer Personality Type (optional)</label>
+                        <label for="personalityType" class="block text-sm font-medium text-slate-700" data-lang="personalityTypeLabel">Kundens Personlighetstyp (valfritt)</label>
                         <select id="personalityType" name="personalityType" class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
-                            <option value="">(Select one)</option>
-                            <option value="Analytical">Analytical (Loves data, details, and logic)</option>
-                            <option value="Driver">Driver (Goal-oriented, decisive, and values efficiency)</option>
-                            <option value="Amiable">Amiable (Relationship-focused, values trust and harmony)</option>
-                            <option value="Expressive">Expressive (Enthusiastic, innovative, and loves the big picture)</option>
+                            <option value="" data-lang="selectOneOption">(Välj en)</option>
+                            <option value="Analytical" data-lang="analyticalOption">Analytisk (Älskar data, detaljer och logik)</option>
+                            <option value="Driver" data-lang="driverOption">Drivande (Målmedveten, beslutsam och värdesätter effektivitet)</option>
+                            <option value="Amiable" data-lang="amiableOption">Vänlig (Relationsfokuserad, värdesätter tillit och harmoni)</option>
+                            <option value="Expressive" data-lang="expressiveOption">Expressiv (Entusiastisk, innovativ och älskar den stora bilden)</option>
                         </select>
                     </div>
         
                     <div>
-                        <label for="competitorSolution" class="block text-sm font-medium text-slate-700">Competitor Product (optional)</label>
-                        <textarea id="competitorSolution" name="competitorSolution" rows="2" placeholder="e.g., SAP, Oracle, NetSuite"
+                        <label for="competitorSolution" class="block text-sm font-medium text-slate-700" data-lang="competitorSolutionLabel">Konkurrentprodukt (valfritt)</label>
+                        <textarea id="competitorSolution" name="competitorSolution" rows="2" data-lang-placeholder="competitorSolutionPlaceholder" placeholder="t.ex. SAP, Oracle, NetSuite"
                                   class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input"></textarea>
                     </div>
 
                     <div>
-                        <label for="messageLength" class="block text-sm font-medium text-slate-700">Message Length<span class="text-red-500">*</span></label>
+                        <label for="messageLength" class="block text-sm font-medium text-slate-700" data-lang="messageLengthLabel">Meddelandelängd<span class="text-red-500">*</span></label>
                         <select id="messageLength" name="messageLength" required class="mt-1 block w-full rounded-md shadow-sm focus:outline-none p-3 bg-gray-input">
-                            <option value="short">Short and to the Point</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="detailed">Detailed</option>
-                            <option value="surprise">Surprise me</option>
+                            <option value="short" data-lang="shortOption">Kort och koncist</option>
+                            <option value="moderate" data-lang="moderateOption">Måttlig</option>
+                            <option value="detailed" data-lang="detailedOption">Detaljerad</option>
+                            <option value="surprise" data-lang="surpriseOption">Överraska mig</option>
                         </select>
                     </div>
                 </div>
     
-                <button type="submit" id="generateBtn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-medium text-white shadow-sm btn-primary">
-                    Generate Emails
+                <button type="submit" id="generateBtn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-medium text-white shadow-sm btn-primary" data-lang="generateButton">
+                    Generera E-postmeddelanden
                 </button>
             </form>
             
             <!-- Loading Indicator -->
             <div id="loading" class="mt-8 text-center hidden">
                 <div class="animate-spin rounded-full h-12 w-12 border-4 border-t-4 border-blue-600 border-opacity-25 mx-auto"></div>
-                <p class="mt-4 text-slate-600">Generating pitches, please wait...</p>
+                <p class="mt-4 text-slate-600" data-lang="loadingText">Genererar pitchar, vänligen vänta...</p>
             </div>
     
             <!-- Email Output Container -->
             <div id="results" class="mt-8 hidden">
                 <!-- Sales Manager Analysis -->
                 <div id="managerAnalysis" class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8 hidden">
-                    <h2 class="text-xl font-bold text-blue-800 mb-2">Sales Manager's Analysis</h2>
+                    <h2 class="text-xl font-bold text-blue-800 mb-2" data-lang="analysisTitle">Säljchefens Analys</h2>
                     <p id="analysisText" class="text-blue-700"></p>
                 </div>
     
-                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4">Generated Email Pitches</h2>
+                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4" data-lang="generatedPitchesTitle">Genererade E-postpitchar</h2>
                 <div id="emailContainer" class="space-y-6"></div>
             </div>
             
             <!-- Public Emails Section -->
             <div class="mt-12 pt-8 border-t border-slate-300">
-                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4">Public Email History</h2>
+                <h2 class="text-2xl font-bold text-slate-800 text-center mb-4" data-lang="publicHistoryTitle">Offentlig E-posthistorik</h2>
                 <div id="publicEmails" class="space-y-6">
-                    <p class="text-slate-500 text-center">Loading public email history...</p>
+                    <p class="text-slate-500 text-center" data-lang="loadingPublicHistory">Laddar offentlig e-posthistorik...</p>
                 </div>
             </div>
         </div>
@@ -245,42 +263,42 @@
         <!-- Help Page Content -->
         <div id="helpContent" class="hidden">
             <div class="text-center mb-10">
-                <h1 class="text-4xl font-bold text-slate-800">Help & FAQ</h1>
-                <p class="mt-2 text-lg text-slate-500">How to use this tool and answers to common questions.</p>
-                <button id="hideHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block">Back to Agent</button>
+                <h1 class="text-4xl font-bold text-slate-800" data-lang="helpPageTitle">Hjälp & FAQ</h1>
+                <p class="mt-2 text-lg text-slate-500" data-lang="helpPageSubtitle">Hur man använder det här verktyget och svar på vanliga frågor.</p>
+                <button id="hideHelpBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors duration-200 mt-2 inline-block" data-lang="backToAgentButton">Till Säljagenten</button>
             </div>
 
             <div class="space-y-8">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">How to Use the Agent</h2>
-                    <p class="text-slate-600">
-                        The AI Sales Agent is designed to help you quickly generate personalized, high-quality email pitches with a variety of tones. By providing key information about a customer and their company, the agent can craft emails that are tailored, relevant, and more likely to get a response.
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2" data-lang="howToUseTitle">Hur man använder agenten</h2>
+                    <p class="text-slate-600" data-lang="howToUseDesc">
+                        AI-säljagenten är utformad för att hjälpa dig att snabbt generera personliga e-postpitchar av hög kvalitet med olika tonlägen. Genom att tillhandahålla nyckelinformation om en kund och deras företag kan agenten skapa e-postmeddelanden som är skräddarsydda, relevanta och har större chans att få svar.
                     </p>
                     <ul class="list-decimal list-inside text-slate-600 mt-4 space-y-2">
-                        <li>**Fill in the Form:** The form is where you'll provide all the information the AI needs to generate the best email drafts. Inputs like **Customer Website** and **Customer LinkedIn Profile** are optional but highly recommended to get the most accurate results.</li>
-                        <li>**Select Personality Type:** This is a powerful feature that influences the AI's recommendation. Selecting a personality type helps the agent choose the best tone to match the customer's communication style.</li>
-                        <li>**Generate Emails:** Click the **"Generate Emails"** button. The AI will process your input and, in a few moments, present three email drafts: Professional, Engaging, and Relaxed.</li>
-                        <li>**Review the Analysis:** The **"Sales Manager's Analysis"** box will appear at the top. This provides a recommendation on which tone is best suited for the customer based on the personality type you selected.</li>
-                        <li>**Select & Copy:** Review the generated emails. Once you find the one you like, simply click the **"Copy** button next to it. The email's subject and body will be copied to your clipboard, ready to be pasted into your email client.</li>
+                        <li data-lang="howToUsePoint1">**Fyll i formuläret:** Formuläret är där du anger all information AI:n behöver för att generera de bästa e-postutkasten. Inmatningar som **Kundens Webbplats** och **Kundens LinkedIn-profil** är valfria men rekommenderas starkt för att få de mest exakta resultaten.</li>
+                        <li data-lang="howToUsePoint2">**Välj Personlighetstyp:** Detta är en kraftfull funktion som påverkar AI:ns rekommendation. Att välja en personlighetstyp hjälper agenten att välja det bästa tonläget för att matcha kundens kommunikationsstil.</li>
+                        <li data-lang="howToUsePoint3">**Generera E-postmeddelanden:** Klicka på **"Generera E-postmeddelanden"**-knappen. AI:n kommer att bearbeta din inmatning och presentera tre e-postutkast: Professionell, Engagerande och Avslappnad.</li>
+                        <li data-lang="howToUsePoint4">**Granska Analysen:** **"Säljchefens Analys"**-rutan visas högst upp. Denna ger en rekommendation om vilket tonläge som passar bäst för kunden baserat på den valda personlighetstypen.</li>
+                        <li data-lang="howToUsePoint5">**Välj & Kopiera:** Granska de genererade e-postmeddelandena. När du hittar det du gillar klickar du bara på **"Kopiera"**-knappen bredvid det. E-postens ämne och brödtext kopieras till ditt urklipp, redo att klistras in i din e-postklient.</li>
                     </ul>
                 </div>
 
                 <hr class="border-t border-slate-300">
 
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Frequently Asked Questions</h2>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2" data-lang="faqTitle">Vanliga frågor</h2>
                     <div class="space-y-4">
-                        <p class="font-bold text-slate-800">Q: Why are there three different email tones?</p>
-                        <p class="text-slate-600">
-                            **A:** Different people respond to different communication styles. The **Professional** tone is ideal for analytical personalities, while the **Engaging** tone is best for expressive customers. The **Relaxed** tone is a great, brief option that respects the customer's time.
+                        <p class="font-bold text-slate-800" data-lang="faqQuestion1">F: Varför finns det tre olika tonlägen i e-postmeddelandet?</p>
+                        <p class="text-slate-600" data-lang="faqAnswer1">
+                            **S:** Olika människor svarar på olika kommunikationsstilar. Den **Professionella** tonen är idealisk för analytiska personligheter, medan den **Engagerande** tonen är bäst för uttrycksfulla kunder. Den **Avslappnade** tonen är ett bra, kort alternativ som respekterar kundens tid.
                         </p>
-                        <p class="font-bold text-slate-800">Q: How does the "Personality Type" input work?</p>
-                        <p class="text-slate-600">
-                            **A:** This feature is based on common personality frameworks used in sales. It helps the AI recommend the most effective tone and communication style for your customer, increasing your chances of getting a positive response.
+                        <p class="font-bold text-slate-800" data-lang="faqQuestion2">F: Hur fungerar inmatningen av "Personlighetstyp"?</p>
+                        <p class="text-slate-600" data-lang="faqAnswer2">
+                            **S:** Den här funktionen bygger på vanliga personlighetsramar som används inom försäljning. Den hjälper AI:n att rekommendera det mest effektiva tonläget och kommunikationsstilen för din kund, vilket ökar dina chanser att få ett positivt svar.
                         </p>
-                        <p class="font-bold text-slate-800">Q: Is my data saved and shared?</p>
-                        <p class="text-slate-600">
-                            **A:** The customer's name and business, along with the best tone recommendation, are saved to a public database so you can see a history of generated emails from other users. This is for collaborative purposes only and does not include any private or sensitive information.
+                        <p class="font-bold text-slate-800" data-lang="faqQuestion3">F: Sparas och delas min data?</p>
+                        <p class="text-slate-600" data-lang="faqAnswer3">
+                            **S:** Kundens namn och verksamhet, tillsammans med den bästa tonrekommendationen, sparas i en offentlig databas så att du kan se en historik över genererade e-postmeddelanden från andra användare. Detta är endast för samarbetsändamål och inkluderar ingen privat eller känslig information.
                         </p>
                     </div>
                 </div>
@@ -293,97 +311,17 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, onSnapshot, collection, query, orderBy, limit, serverTimestamp, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // UI Navigation
-        const mainContent = document.getElementById('mainContent');
-        const helpContent = document.getElementById('helpContent');
-        const showHelpBtn = document.getElementById('showHelpBtn');
-        const hideHelpBtn = document.getElementById('hideHelpBtn');
-        const myInfoForm = document.getElementById('myInfoForm');
-        const myInfoSaved = document.getElementById('myInfoSaved');
-        const saveMyInfoBtn = document.getElementById('saveMyInfoBtn');
-        const changeMyInfoBtn = document.getElementById('changeMyInfoBtn');
-        const myNameInput = document.getElementById('myName');
-        const myRoleInput = document.getElementById('myRole');
-        const savedMyNameSpan = document.getElementById('savedMyName');
-        const savedMyRoleSpan = document.getElementById('savedMyRole');
-        const customCompanyFields = document.getElementById('customCompanyFields');
-        const sourceCompanySelector = document.getElementById('sourceCompanySelector');
-        const sourceCompanyNameInput = document.getElementById('sourceCompanyName');
-        const sourceCompanyWebsiteInput = document.getElementById('sourceCompanyWebsite');
-
-        showHelpBtn.addEventListener('click', () => {
-            mainContent.classList.add('hidden');
-            helpContent.classList.remove('hidden');
-        });
-
-        hideHelpBtn.addEventListener('click', () => {
-            helpContent.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-        });
-
-        sourceCompanySelector.addEventListener('change', (e) => {
-            if (e.target.value === 'Other') {
-                customCompanyFields.classList.remove('hidden');
-                sourceCompanyNameInput.setAttribute('required', 'required');
-                sourceCompanyWebsiteInput.setAttribute('required', 'required');
-            } else {
-                customCompanyFields.classList.add('hidden');
-                sourceCompanyNameInput.removeAttribute('required');
-                sourceCompanyWebsiteInput.removeAttribute('required');
-            }
-            // Automatically populate competitors based on selected company
-            populateCompetitors(e.target.value);
-        });
-
-        // Functions for My Info persistence
-        function saveMyInfo() {
-            const myName = myNameInput.value;
-            const myRole = myRoleInput.value;
-            if (myName && myRole) {
-                // Use localStorage for saving personal info
-                localStorage.setItem('myName', myName);
-                localStorage.setItem('myRole', myRole);
-                loadMyInfo();
-            }
-        }
-
-        function loadMyInfo() {
-            const savedName = localStorage.getItem('myName');
-            const savedRole = localStorage.getItem('myRole');
-
-            if (savedName && savedRole) {
-                myNameInput.value = savedName;
-                myRoleInput.value = savedRole;
-                savedMyNameSpan.textContent = savedName;
-                savedMyRoleSpan.textContent = savedRole;
-                myInfoForm.classList.add('hidden');
-                myInfoSaved.classList.remove('hidden');
-            } else {
-                myInfoForm.classList.remove('hidden');
-                myInfoSaved.classList.add('hidden');
-            }
-        }
-        
-        // Event listeners
-        if (saveMyInfoBtn) {
-            saveMyInfoBtn.addEventListener('click', saveMyInfo);
-        }
-        if (changeMyInfoBtn) {
-            changeMyInfoBtn.addEventListener('click', () => {
-                myInfoSaved.classList.add('hidden');
-                myInfoForm.classList.remove('hidden');
-            });
-        }
-
-
         // **********************************************
-        // START: GLOBAL DATA AND CONFIGURATION
-        // These variables MUST be defined in the global scope of the module
+        // START: GLOBAL DATA AND CONFIGURATION (Must be at the top of the module)
         // **********************************************
+        // Core Firebase/App variables (must be defined early in module scope)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' && Object.keys(JSON.parse(__firebase_config)).length !== 0 ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; 
         let app, db, auth, userId = null;
         let isFirebaseActive = false;
+
+        let currentLang = localStorage.getItem('appLang') || 'sv'; 
 
         // Competitor Data
         const competitorData = {
@@ -487,9 +425,356 @@
                 ]
             }
         };
+        
+        const languageData = {
+            sv: {
+                appTitle: "AI Säljagent",
+                appSubtitle: "Generera personliga e-postmeddelanden med tre olika toner.",
+                helpFAQ: "Hjälp & FAQ",
+                yourUserID: "Ditt Användar-ID",
+                selectLanguageLabel: "Välj Språk",
+                coachingCornerTitle: "Coachinghörnan",
+                myInfoTitle: "Mina Uppgifter",
+                myNameLabel: "Mitt Namn",
+                myNamePlaceholder: "t.ex. John Smith",
+                myRoleLabel: "Min Roll",
+                myRolePlaceholder: "t.ex. Försäljningschef",
+                myServicesLabel: "Mina Tjänster/Värdeerbjudande",
+                myServicesPlaceholder: "t.ex. Vi erbjuder molnbaserad ERP-mjukvara med fokus på fältservice och resursoptimering.",
+                saveMyInfoButton: "Spara Mina Uppgifter",
+                changeButton: "Ändra",
+                myCompanyTitle: "Mitt Företag",
+                myCompanySelectLabel: "Mitt Företag",
+                myCompanyNameLabel: "Mitt Företagsnamn",
+                myCompanyNamePlaceholder: "t.ex. Ditt företag",
+                myCompanyWebsiteLabel: "Min Företagswebbplats (URL)",
+                myCompanyWebsitePlaceholder: "t.ex. www.dittforetag.com",
+                customerTitle: "Kund",
+                customerNameLabel: "Kundens Namn",
+                customerNamePlaceholder: "John Doe",
+                customerBusinessLabel: "Kundens Bransch/Verksamhet",
+                customerBusinessPlaceholder: "E-handelslogistik",
+                customerWebsiteLabel: "Kundens Webbplats (URL)",
+                customerWebsitePlaceholder: "www.exempel.com",
+                annualReportUrlLabel: "Kundens Årsredovisning (URL)",
+                annualReportUrlPlaceholder: "Länk till kundens senaste årsredovisning",
+                linkedinProfileLabel: "Kundens LinkedIn-profil (URL)",
+                personalityTypeLabel: "Kundens Personlighetstyp (valfritt)",
+                selectOneOption: "(Välj en)",
+                analyticalOption: "Analytisk (Älskar data, detaljer och logik)",
+                driverOption: "Drivande (Målmedveten, beslutsam och värdesätter effektivitet)",
+                amiableOption: "Vänlig (Relationsfokuserad, värdesätter tillit och harmoni)",
+                expressiveOption: "Expressiv (Entusiastisk, innovativ och älskar den stora bilden)",
+                competitorSolutionLabel: "Konkurrentprodukt (valfritt)",
+                competitorSolutionPlaceholder: "t.ex. SAP, Oracle, NetSuite",
+                messageLengthLabel: "Meddelandelängd",
+                shortOption: "Kort och koncist (50-75 ord)",
+                moderateOption: "Måttlig (120-180 ord)",
+                detailedOption: "Detaljerad (200-300 ord)",
+                surpriseOption: "Överraska mig",
+                generateButton: "Generera E-postmeddelanden",
+                loadingText: "Genererar pitchar, vänligen vänta...",
+                analysisTitle: "Säljchefens Analys",
+                generatedPitchesTitle: "Genererade E-postpitchar",
+                publicHistoryTitle: "Offentlig E-posthistorik",
+                loadingPublicHistory: "Laddar offentlig e-posthistorik...",
+                copyButton: "Kopiera",
+                sendEmailButton: "Skicka E-post",
+                copiedText: "Kopierat!",
+                featureUnavailable: "Funktion otillgänglig lokalt!",
+                deployMessage: "AI-e-postgenerering kräver distribution till en serverlös plattform som Vercel.",
+                analysisBase: "Baserat på kundens personlighetstyp",
+                analysisRecommendation: "är den bästa metoden att använda ett",
+                analysisTone: "tonläge",
+                analysisConclusion: "Detta tonläge stämmer överens med deras kommunikationsstil, vilket hjälper dig att bygga relationer och förmedla ditt budskap effektivt.",
+                analysisNoPersonality: "Ingen personlighetstyp valdes. Vi rekommenderar att börja med ett"
+            },
+            en: {
+                appTitle: "AI Sales Agent",
+                appSubtitle: "Generate personalized emails with three distinct tones.",
+                helpFAQ: "Help & FAQ",
+                yourUserID: "Your User ID",
+                selectLanguageLabel: "Select Language",
+                coachingCornerTitle: "Coaching Corner",
+                myInfoTitle: "My Info",
+                myNameLabel: "My Name",
+                myNamePlaceholder: "e.g., John Smith",
+                myRoleLabel: "My Role",
+                myRolePlaceholder: "e.g., Sales Manager",
+                myServicesLabel: "My Services/Value Proposition",
+                myServicesPlaceholder: "e.g., We offer cloud-based ERP software focused on field service and resource optimization.",
+                saveMyInfoButton: "Save My Info",
+                changeButton: "Change",
+                myCompanyTitle: "My Company",
+                myCompanySelectLabel: "My Company",
+                myCompanyNameLabel: "My Company Name",
+                myCompanyNamePlaceholder: "e.g., Your company",
+                myCompanyWebsiteLabel: "My Company Website (URL)",
+                myCompanyWebsitePlaceholder: "e.g., www.yourcompany.com",
+                customerTitle: "Customer",
+                customerNameLabel: "Customer Name",
+                customerNamePlaceholder: "John Doe",
+                customerBusinessLabel: "Customer Business/Industry",
+                customerBusinessPlaceholder: "E-commerce logistics",
+                customerWebsiteLabel: "Customer Website (URL)",
+                customerWebsitePlaceholder: "www.example.com",
+                annualReportUrlLabel: "Customer Annual Report (URL)",
+                annualReportUrlPlaceholder: "Link to the customer's latest annual report",
+                linkedinProfileLabel: "Customer LinkedIn Profile (URL)",
+                linkedinProfilePlaceholder: "linkedin.com/in/johndoe",
+                personalityTypeLabel: "Customer Personality Type (optional)",
+                selectOneOption: "(Select one)",
+                analyticalOption: "Analytical (Loves data, details, and logic)",
+                driverOption: "Driver (Goal-oriented, decisive, and values efficiency)",
+                amiableOption: "Amiable (Relationship-focused, values trust and harmony)",
+                expressiveOption: "Expressive (Enthusiastic, innovative, and loves the big picture)",
+                competitorSolutionLabel: "Competitor Product (optional)",
+                competitorSolutionPlaceholder: "e.g., SAP, Oracle, NetSuite",
+                messageLengthLabel: "Message Length",
+                shortOption: "Short and to the Point (50-75 words)",
+                moderateOption: "Moderate (120-180 words)",
+                detailedOption: "Detailed (200-300 words)",
+                surpriseOption: "Surprise me",
+                generateButton: "Generate Emails",
+                loadingText: "Generating pitches, please wait...",
+                analysisTitle: "Sales Manager's Analysis",
+                generatedPitchesTitle: "Generated Email Pitches",
+                publicHistoryTitle: "Public Email History",
+                loadingPublicHistory: "Loading public email history...",
+                copyButton: "Copy",
+                sendEmailButton: "Send Email",
+                copiedText: "Copied!",
+                featureUnavailable: "Feature Unavailable Locally!",
+                deployMessage: "AI email generation requires deployment to a serverless platform like Vercel.",
+                analysisBase: "Based on the customer's personality type",
+                analysisRecommendation: "the best approach is to use a",
+                analysisTone: "tone",
+                analysisConclusion: "This tone aligns with their communication style, helping you build rapport and effectively convey your message.",
+                analysisNoPersonality: "No personality type was selected. We recommend starting with a"
+            },
+            es: {
+                appTitle: "Agente de Ventas IA",
+                appSubtitle: "Genere correos electrónicos personalizados con tres tonos distintos.",
+                helpFAQ: "Ayuda y Preguntas",
+                yourUserID: "Tu ID de Usuario",
+                selectLanguageLabel: "Seleccionar Idioma",
+                coachingCornerTitle: "Rincón de Coaching",
+                myInfoTitle: "Mi Información",
+                myNameLabel: "Mi Nombre",
+                myNamePlaceholder: "ej. Juan Pérez",
+                myRoleLabel: "Mi Rol",
+                myRolePlaceholder: "ej. Gerente de Ventas",
+                myServicesLabel: "Mis Servicios/Propuesta de Valor",
+                myServicesPlaceholder: "ej. Ofrecemos software ERP basado en la nube centrado en el servicio de campo y la optimización de recursos.",
+                saveMyInfoButton: "Guardar Mi Información",
+                changeButton: "Cambiar",
+                myCompanyTitle: "Mi Empresa",
+                myCompanySelectLabel: "Mi Empresa",
+                myCompanyNameLabel: "Nombre de Mi Empresa",
+                myCompanyNamePlaceholder: "ej. Tu empresa",
+                myCompanyWebsiteLabel: "Sitio Web de Mi Empresa (URL)",
+                myCompanyWebsitePlaceholder: "ej. www.tuempresa.com",
+                customerTitle: "Cliente",
+                customerNameLabel: "Nombre del Cliente",
+                customerNamePlaceholder: "John Doe",
+                customerBusinessLabel: "Negocio/Industria del Cliente",
+                customerBusinessPlaceholder: "Logística de comercio electrónico",
+                customerWebsiteLabel: "Sitio Web del Cliente (URL)",
+                customerWebsitePlaceholder: "www.ejemplo.com",
+                annualReportUrlLabel: "Informe Anual del Cliente (URL)",
+                annualReportUrlPlaceholder: "Enlace al último informe anual del cliente",
+                linkedinProfileLabel: "Perfil de LinkedIn del Cliente (URL)",
+                linkedinProfilePlaceholder: "linkedin.com/in/johndoe",
+                personalityTypeLabel: "Tipo de Personalidad del Cliente (opcional)",
+                selectOneOption: "(Seleccionar uno)",
+                analyticalOption: "Analítico (Ama los datos, detalles y la lógica)",
+                driverOption: "Conductor (Orientado a objetivos, decisivo y valora la eficiencia)",
+                amiableOption: "Amable (Centrado en relaciones, valora la confianza y la armonía)",
+                expressiveOption: "Expresivo (Entusiasta, innovador y le gusta el panorama general)",
+                competitorSolutionLabel: "Producto de la Competencia (opcional)",
+                competitorSolutionPlaceholder: "ej. SAP, Oracle, NetSuite",
+                messageLengthLabel: "Longitud del Mensaje",
+                shortOption: "Corto y al grano (50-75 palabras)",
+                moderateOption: "Moderado (120-180 palabras)",
+                detailedOption: "Detallado (200-300 palabras)",
+                surpriseOption: "Sorpréndeme",
+                generateButton: "Generar Correos Electrónicos",
+                loadingText: "Generando propuestas, por favor espere...",
+                analysisTitle: "Análisis del Gerente de Ventas",
+                generatedPitchesTitle: "Propuestas de Correo Electrónico Generadas",
+                publicHistoryTitle: "Historial Público de Correos Electrónicos",
+                loadingPublicHistory: "Cargando historial público de correos...",
+                copyButton: "Copiar",
+                sendEmailButton: "Enviar Correo",
+                copiedText: "¡Copiado!",
+                featureUnavailable: "¡Función no disponible localmente!",
+                deployMessage: "La generación de correo electrónico con IA requiere la implementación en una plataforma sin servidor como Vercel.",
+                analysisBase: "Basado en el tipo de personalidad del cliente",
+                analysisRecommendation: "el mejor enfoque es usar un tono",
+                analysisTone: "tono",
+                analysisConclusion: "Este tono se alinea con su estilo de comunicación, ayudándole a construir una buena relación y transmitir su mensaje de manera efectiva.",
+                analysisNoPersonality: "No se seleccionó el tipo de personalidad. Recomendamos comenzar con un tono"
+            },
+            fa: {
+                appTitle: "نماینده فروش هوش مصنوعی",
+                appSubtitle: "ایجاد ایمیل‌های شخصی‌سازی شده با سه لحن متمایز.",
+                helpFAQ: "راهنما و سوالات متداول",
+                yourUserID: "شناسه کاربری شما",
+                selectLanguageLabel: "انتخاب زبان",
+                coachingCornerTitle: "گوشه مربیگری",
+                myInfoTitle: "اطلاعات من",
+                myNameLabel: "نام من",
+                myNamePlaceholder: "به عنوان مثال، جان اسمیت",
+                myRoleLabel: "نقش من",
+                myRolePlaceholder: "به عنوان مثال، مدیر فروش",
+                myServicesLabel: "خدمات/ارزش پیشنهادی من",
+                myServicesPlaceholder: "به عنوان مثال، ما نرم‌افزار ERP مبتنی بر ابر با تمرکز بر خدمات میدانی و بهینه‌سازی منابع ارائه می‌دهیم.",
+                saveMyInfoButton: "ذخیره اطلاعات من",
+                changeButton: "تغییر",
+                myCompanyTitle: "شرکت من",
+                myCompanySelectLabel: "شرکت من",
+                myCompanyNameLabel: "نام شرکت من",
+                myCompanyNamePlaceholder: "به عنوان مثال، شرکت شما",
+                myCompanyWebsiteLabel: "وب‌سایت شرکت من (URL)",
+                myCompanyWebsitePlaceholder: "به عنوان مثال، www.yourcompany.com",
+                customerTitle: "مشتری",
+                customerNameLabel: "نام مشتری",
+                customerNamePlaceholder: "جان دو",
+                customerBusinessLabel: "تجارت/صنعت مشتری",
+                customerBusinessPlaceholder: "لجستیک تجارت الکترونیک",
+                customerWebsiteLabel: "وب‌سایت مشتری (URL)",
+                customerWebsitePlaceholder: "www.example.com",
+                annualReportUrlLabel: "گزارش سالانه مشتری (URL)",
+                annualReportUrlPlaceholder: "رابط لآخر تقرير سنوي للعميل",
+                linkedinProfileLabel: "پروفایل لینکدین مشتری (URL)",
+                personalityTypeLabel: "نوع شخصیت مشتری (اختیاری)",
+                selectOneOption: "(یکی را انتخاب کنید)",
+                analyticalOption: "تحلیلی (علاقه‌مند به داده، جزئیات و منطق)",
+                driverOption: "رهبر (هدف‌گرا، قاطع، و ارزش‌گذار به کارایی)",
+                amiableOption: "دوستانه (رابطه‌محور، ارزش‌گذار به اعتماد و هماهنگی)",
+                expressiveOption: "بیانگر (مشتاق، نوآور و دوست‌دار تصویر کلی)",
+                competitorSolutionLabel: "محصول رقیب (اختیاری)",
+                competitorSolutionPlaceholder: "به عنوان مثال، SAP, Oracle, NetSuite",
+                messageLengthLabel: "طول پیام",
+                shortOption: "کوتاه و دقیق (50-75 کلمه)",
+                moderateOption: "متعادل (120-180 کلمه)",
+                detailedOption: "مفصل (200-300 کلمه)",
+                surpriseOption: "مرا شگفت‌زده کن",
+                generateButton: "تولید ایمیل‌ها",
+                loadingText: "در حال تولید پیشنهادات، لطفاً صبر کنید...",
+                analysisTitle: "تحلیل مدیر فروش",
+                generatedPitchesTitle: "ایمیل‌های تولید شده",
+                publicHistoryTitle: "تاریخچه عمومی ایمیل",
+                loadingPublicHistory: "در حال بارگذاری تاریخچه عمومی ایمیل...",
+                copyButton: "کپی",
+                sendEmailButton: "ارسال ایمیل",
+                copiedText: "کپی شد!",
+                featureUnavailable: "قابلیت در حالت محلی در دسترس نیست!",
+                deployMessage: "تولید ایمیل با هوش مصنوعی نیاز به استقرار در یک پلتفرم بدون سرور مانند Vercel.",
+                analysisBase: "بر اساس نوع شخصیت مشتری",
+                analysisRecommendation: "بهترین رویکرد استفاده از لحن",
+                analysisTone: "است",
+                analysisConclusion: "این لحن با سبک ارتباطی آنها هماهنگ است و به شما کمک می‌کند تا رابطه برقرار کرده و پیام خود را به طور موثر منتقل کنید.",
+                analysisNoPersonality: "نوع شخصیت انتخاب نشده است. توصیه می‌کنیم با لحن"
+            }
+        };
+
         // **********************************************
         // END: GLOBAL DATA AND CONFIGURATION
         // **********************************************
+        
+        // UI Navigation
+        const mainContent = document.getElementById('mainContent');
+        const helpContent = document.getElementById('helpContent');
+        const showHelpBtn = document.getElementById('showHelpBtn');
+        const hideHelpBtn = document.getElementById('hideHelpBtn');
+        const myInfoForm = document.getElementById('myInfoForm');
+        const myInfoSaved = document.getElementById('myInfoSaved');
+        const saveMyInfoBtn = document.getElementById('saveMyInfoBtn');
+        const changeMyInfoBtn = document.getElementById('changeMyInfoBtn');
+        const myNameInput = document.getElementById('myName');
+        const myRoleInput = document.getElementById('myRole');
+        const myServicesInput = document.getElementById('myServices'); // New input
+        const savedMyNameSpan = document.getElementById('savedMyName');
+        const savedMyRoleSpan = document.getElementById('savedMyRole');
+        const savedMyServicesSpan = document.getElementById('savedMyServices'); // New span
+        const customCompanyFields = document.getElementById('customCompanyFields');
+        const sourceCompanySelector = document.getElementById('sourceCompanySelector');
+        const sourceCompanyNameInput = document.getElementById('sourceCompanyName');
+        const sourceCompanyWebsiteInput = document.getElementById('sourceCompanyWebsite');
+
+        showHelpBtn.addEventListener('click', () => {
+            mainContent.classList.add('hidden');
+            helpContent.classList.remove('hidden');
+        });
+
+        hideHelpBtn.addEventListener('click', () => {
+            helpContent.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        });
+
+        sourceCompanySelector.addEventListener('change', (e) => {
+            if (e.target.value === 'Other') {
+                customCompanyFields.classList.remove('hidden');
+                sourceCompanyNameInput.setAttribute('required', 'required');
+                sourceCompanyWebsiteInput.setAttribute('required', 'required');
+            } else {
+                customCompanyFields.classList.add('hidden');
+                sourceCompanyNameInput.removeAttribute('required');
+                sourceCompanyWebsiteInput.removeAttribute('required');
+            }
+            // Automatically populate competitors based on selected company
+            populateCompetitors(e.target.value);
+        });
+
+        // Functions for My Info persistence
+        function saveMyInfo() {
+            const myName = myNameInput.value;
+            const myRole = myRoleInput.value;
+            const myServices = myServicesInput.value;
+
+            if (myName && myRole && myServices) {
+                // Use localStorage for saving personal info
+                localStorage.setItem('myName', myName);
+                localStorage.setItem('myRole', myRole);
+                localStorage.setItem('myServices', myServices);
+                loadMyInfo();
+            }
+        }
+
+        function loadMyInfo() {
+            const savedName = localStorage.getItem('myName');
+            const savedRole = localStorage.getItem('myRole');
+            const savedServices = localStorage.getItem('myServices');
+
+            if (savedName && savedRole && savedServices) {
+                myNameInput.value = savedName;
+                myRoleInput.value = savedRole;
+                myServicesInput.value = savedServices;
+
+                savedMyNameSpan.textContent = savedName;
+                savedMyRoleSpan.textContent = savedRole;
+                savedMyServicesSpan.textContent = savedServices;
+
+                myInfoForm.classList.add('hidden');
+                myInfoSaved.classList.remove('hidden');
+            } else {
+                myInfoForm.classList.remove('hidden');
+                myInfoSaved.classList.add('hidden');
+            }
+        }
+        
+        // Event listeners
+        if (saveMyInfoBtn) {
+            saveMyInfoBtn.addEventListener('click', saveMyInfo);
+        }
+        if (changeMyInfoBtn) {
+            changeMyInfoBtn.addEventListener('click', () => {
+                myInfoSaved.classList.add('hidden');
+                myInfoForm.classList.remove('hidden');
+            });
+        }
+
 
         function populateCompetitors(companyName) {
             const competitorSolutionInput = document.getElementById('competitorSolution');
@@ -539,7 +824,7 @@
                 const publicEmailsContainer = document.getElementById('publicEmails');
                 publicEmailsContainer.innerHTML = '';
                 if (querySnapshot.empty) {
-                    publicEmailsContainer.innerHTML = '<p class="text-slate-500 text-center">No public emails generated yet.</p>';
+                    publicEmailsContainer.innerHTML = `<p class="text-slate-500 text-center">${languageData[currentLang].loadingPublicHistory}</p>`;
                     return;
                 }
                 querySnapshot.forEach((doc) => {
@@ -556,7 +841,7 @@
                 });
             }, (error) => {
                 console.error("Error listening to public emails:", error);
-                document.getElementById('publicEmails').innerHTML = '<p class="text-red-500 text-center">Failed to load public history. Please try again later.</p>';
+                document.getElementById('publicEmails').innerHTML = `<p class="text-red-500 text-center">${languageData[currentLang].failedToLoadHistory}</p>`;
             });
         }
 
@@ -570,8 +855,6 @@
         }
         
         function initializeFirebase() {
-            // Global variables are now defined at the top of the module scope.
-            
             // Only initialize Firebase if a valid config is provided
             if (firebaseConfig) {
                 try {
@@ -585,7 +868,7 @@
                     onAuthStateChanged(auth, async (user) => {
                         if (user) {
                             userId = user.uid;
-                            document.getElementById('userIdDisplay').textContent = `Your User ID: ${userId}`;
+                            document.getElementById('userIdDisplay').textContent = `${languageData[currentLang].yourUserID}: ${userId}`;
                             document.getElementById('userIdDisplay').classList.remove('hidden');
                             setupPublicHistoryListener();
                         } else {
@@ -614,7 +897,7 @@
                 if (publicEmailsContainer) {
                     publicEmailsContainer.innerHTML = `
                         <div class="p-4 bg-yellow-100 rounded-md border border-yellow-200 text-yellow-800 text-center">
-                            <p>Public email history is unavailable when running locally.</p>
+                            <p>${languageData[currentLang].publicHistoryUnavailable}</p>
                         </div>
                     `;
                 }
@@ -625,6 +908,7 @@
             loadInspirationalContent();
             loadMyInfo(); // Load saved info after DOM is ready
             initializeFirebase(); // Initialize Firebase after functions are defined
+            updateUI(currentLang);
         });
 
         document.getElementById('emailForm').addEventListener('submit', async function(e) {
@@ -644,6 +928,7 @@
 
             const myName = myNameInput.value;
             const myRole = myRoleInput.value;
+            const myServices = myServicesInput.value; // Get new services input
             const customerName = form.customerName.value;
             const customerCompany = form.customerBusiness.value;
             const customerWebsite = form.customerWebsite.value;
@@ -665,8 +950,11 @@
 
             const userPrompt = `
                 I am a sales representative for ${myCompanyName} and our website is ${myCompanyWebsite}. My name is ${myName} and my role is ${myRole}. My goal is to send a cold email to a customer.
-                I need you to generate three different email drafts in three distinct tones: Professional, Engaging, and Relaxed.
+                
+                My Company's Value Proposition: ${myServices}
 
+                I need you to generate three different email drafts in three distinct tones: Professional, Engaging, and Relaxed. The primary focus MUST be on the customer's challenges and how my services can solve their pain points, rather than listing general features of my company.
+                
                 Here is the customer's information:
                 - Customer Name: ${customerName}
                 - Customer Business: ${customerCompany}
@@ -682,7 +970,11 @@
                 Additional context from their website search:
                 ${websiteContent}
 
-                For each email, please act as a sales agent. The emails should highlight how ${myCompanyName}'s capabilities can solve their specific business pain points, and if a competitor solution is provided, you should briefly pitch the benefits of ${myCompanyName} over that competitor's product. Use the website context to align your pitch with their stated goals, mission, or recent activities.
+                For each email, please act as a sales agent. 
+                
+                *Crucial Instruction:* Identify the customer's current role/title based on the information provided, or infer a likely executive role (e.g., Head of Operations, CFO) based on their business. 
+                
+                The pitch must be tailored to the **specific priorities of that role**. For example, if the role is 'CFO', focus on cost reduction and ROI. If the role is 'Head of Supply Chain', focus on efficiency and risk reduction. In the message, clearly reference the role and why the proposed value is vital for their job.
 
                 For the 'Professional' tone, be formal, data-driven, and focus on ROI.
                 For the 'Engaging' tone, be more conversational, use storytelling, and focus on future-state benefits.
@@ -715,9 +1007,11 @@
                     document.getElementById('results').classList.remove('hidden');
                     const errorMessage = `
                         <div class="mt-8 text-center text-red-600 p-4 bg-red-100 border border-red-200 rounded-md">
-                            <p class="font-bold">Feature Unavailable Locally!</p>
-                            <p class="text-sm mt-1">AI email generation requires deployment to a serverless platform like Vercel.</p>
-                            <p class="text-sm mt-1">Please deploy your project to Vercel to use this feature.</p>
+                            <p class="font-bold">${languageData[currentLang].featureUnavailable}</p>
+                            <p class="text-sm mt-1">${languageData[currentLang].deployMessage}</p>
+                            <p class="text-sm mt-1">
+                                <a href="https://vercel.com" target="_blank" class="text-blue-600 hover:underline">Deploy to Vercel</a>
+                            </p>
                         </div>
                     `;
                     document.getElementById('results').innerHTML = errorMessage;
@@ -779,21 +1073,21 @@
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-xl font-semibold ${titleClass}">${email.tone} Tone ${isRecommended ? '<span class="text-sm font-normal text-blue-600">(Recommended)</span>' : ''}</h3>
                                 <div class="flex space-x-2">
-                                    <a href="${mailtoLink}" class="mail-btn flex items-center p-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200" title="Send via email client">
+                                    <a href="${mailtoLink}" class="mail-btn flex items-center p-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200" title="${languageData[currentLang].sendEmailButton}">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                                         </svg>
-                                        Send Email
+                                        ${languageData[currentLang].sendEmailButton}
                                     </a>
                                     <button type="button" class="copy-btn flex items-center p-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200" data-subject="${email.subject}" data-body="${email.body}">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
                                         </svg>
-                                        Copy
+                                        ${languageData[currentLang].copyButton}
                                     </button>
                                 </div>
                             </div>
-                            <p class="font-bold text-slate-800">Subject: <span class="subject">${email.subject}</span></p>
+                            <p class="font-bold text-slate-800" data-lang="subjectLabel">Subject: <span class="subject">${email.subject}</span></p>
                             <div class="mt-2 text-slate-600 body-html">${email.body}</div>
                         </div>
                     `;
@@ -818,7 +1112,7 @@
                 document.getElementById('loading').classList.add('hidden');
                 const errorMessage = `
                     <div class="mt-8 text-center text-red-600 p-4 bg-red-100 border border-red-200 rounded-md">
-                        <p>An error occurred. Please check your inputs and try again.</p>
+                        <p>${languageData[currentLang].analysisTitle}</p>
                         <p class="text-sm mt-1">${error.message}</p>
                     </div>
                 `;
@@ -847,10 +1141,12 @@
         function displayAnalysis(customerPersonalityType, recommendedTone) {
             const analysisText = document.getElementById('analysisText');
             let text = '';
+            const data = languageData[currentLang];
+
             if (customerPersonalityType) {
-                text = `Based on the customer's personality type (${customerPersonalityType}), the best approach is to use a <span class="font-semibold text-blue-900">${recommendedTone}</span> tone. This tone aligns with their communication style, helping you build rapport and effectively convey your message.`;
+                text = `${data.analysisBase} (${customerPersonalityType}), ${data.analysisRecommendation} <span class="font-semibold text-blue-900">${recommendedTone}</span> ${data.analysisTone}. ${data.analysisConclusion}`;
             } else {
-                text = `No personality type was selected. We recommend starting with a <span class="font-semibold text-blue-900">${recommendedTone}</span> tone to be brief and respectful of their time.`;
+                text = `${data.analysisNoPersonality} <span class="font-semibold text-blue-900">${recommendedTone}</span> ${data.analysisTone}.`;
             }
             analysisText.innerHTML = text;
             document.getElementById('managerAnalysis').classList.remove('hidden');
@@ -886,14 +1182,14 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    Copied!
+                    ${languageData[currentLang].copiedText}
                 `;
                 setTimeout(() => {
                     button.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
                         </svg>
-                        Copy
+                        ${languageData[currentLang].copyButton}
                     `;
                 }, 2000);
 
@@ -902,7 +1198,6 @@
                 console.error('Failed to copy using modern API. Falling back to execCommand:', err);
                 const textarea = document.createElement('textarea');
                 textarea.value = textToCopy;
-                textarea.style.position = 'fixed'; // Avoid scrolling
                 document.body.appendChild(textarea);
                 textarea.select();
                 try {
@@ -911,14 +1206,14 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        Copied!
+                        ${languageData[currentLang].copiedText}
                     `;
                     setTimeout(() => {
                         button.innerHTML = `
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2M9 14h6M9 18h6" />
                             </svg>
-                            Copy
+                            ${languageData[currentLang].copyButton}
                         `;
                     }, 2000);
                 } catch (execErr) {
