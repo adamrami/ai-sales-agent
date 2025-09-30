@@ -422,6 +422,49 @@
                 `;
             }
         }
+
+        // Sales quotes for inspiration
+        const salesQuotes = [
+            "Your most unhappy customers are your greatest source of learning. - Bill Gates",
+            "The best way to predict the future is to create it. - Peter Drucker",
+            "A sale is not something you do to someone, it's something you do with someone. - Zig Ziglar",
+            "Don't sell a product, sell an outcome. - Mark Cuban",
+            "The secret to getting ahead is getting started. - Mark Twain",
+            "The key to success is to focus on goals, not obstacles. - Anonymous",
+            "You miss 100% of the shots you don’t take. - Wayne Gretzky",
+            "Either you run the day, or the day runs you. - Jim Rohn",
+            "If you are not taking care of your customer, your competitor will. - Bob Hooey",
+            "The best salespeople are great listeners. - Brian Tracy",
+            "Habit is the intersection of knowledge, skill, and desire. - Stephen Covey",
+            "Be proactive. The most important freedom is the freedom to choose your response to life's events. - Stephen Covey",
+            "Begin with the end in mind. Visualize your destination so you know what you are working towards. - Stephen Covey",
+            "Put first things first. Discipline is the ability to prioritize your actions around your purpose. - Stephen Covey",
+            "Seek first to understand, then to be understood. Listen with the intent to understand, not the intent to reply. - Stephen Covey",
+            "Think win-win. Look for solutions that benefit both you and the customer. - Stephen Covey",
+            "Synergize. Two heads are better than one; work together to achieve greater results. - Stephen Covey",
+            "Sharpen the saw. Take time for self-care to maintain your most valuable asset: yourself. - Stephen Covey",
+            "The only way on earth to influence other people is to talk about what they want and show them how to get it. - Dale Carnegie",
+            "A person's name is to that person the sweetest and most important sound in any language. - Dale Carnegie",
+            "Remember that a man's heart, like a lock, can be opened in only one way, and that is to talk in terms of what he wants. - Dale Carnegie",
+            "If you want to gather honey, don't kick over the beehive. - Dale Carnegie",
+            "Show genuine interest. Smile and be a good listener. - Dale Carnegie",
+            "Show respect for the other person’s opinions. Never say, 'You're wrong.' - Dale Carnegie"
+        ];
+        
+        const coachingTips = [
+            `**Begin with the end in mind.** Before you draft an email, what is your ultimate goal? What is the customer's most likely challenge? When you know the destination, every word you use will have purpose.`,
+            `**Seek first to understand, then to be understood.** Your customer is a person with a problem. Listen more than you talk. Ask insightful questions that show you genuinely care about their business, not just about making a sale.`,
+            `**Think win-win.** A great deal leaves both parties feeling successful. Your goal is to find a solution that helps the customer solve their challenge while also being a strong fit for your product. It's about collaboration, not coercion.`,
+            `**Be proactive.** Don't wait for a response. Take initiative to research the customer and their business. The AI agent can help, but your personal touch and preparation make all the difference.`,
+            `**Talk in terms of what they want.** Dale Carnegie taught us that the only way to influence people is to talk about what they want and show them how to get it. Frame your entire pitch around their needs, not your product's features.`,
+            `**Remember their name.** A person's name is the sweetest and most important sound to them. Use it naturally and respectfully in your communications to build a genuine connection.`,
+            `**Listen effectively.** You can make more friends in two months by being genuinely interested in other people than you can in two years by trying to get other people interested in you. Be a great listener.`,
+            `**Don't criticize, condemn, or complain.** Start your interaction on a positive note. Find something to genuinely admire about their company or recent news, and build from there.`,
+            `**Handle objections gracefully.** Don't tell them they're wrong. Acknowledge their opinion, show respect, and then offer an alternative perspective. It's about finding a path forward together.`,
+            `**Create a sense of urgency, but in a positive way.** Focus on the value they're missing out on by not acting, not on the pressure of a deadline. "The sooner you start, the sooner you'll see results."`
+        ];
+        
+        const animationClasses = ['animate-fade-in', 'animate-slide-up', 'animate-zoom-in'];
         
         // Data for different company products
         const companyData = {
@@ -475,6 +518,41 @@
                 ]
             }
         };
+
+        function loadInspirationalContent() {
+            const quoteTextElement = document.getElementById('quoteText');
+            const coachingTipElement = document.getElementById('coachingTip');
+            
+            // 1. Quotes
+            const randomQuote = salesQuotes[Math.floor(Math.random() * salesQuotes.length)];
+            const randomAnimationQuote = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+            
+            if (quoteTextElement) {
+                // Clear previous classes before adding new one to reset animation
+                quoteTextElement.className = 'text-blue-900 font-semibold italic text-lg'; 
+                void quoteTextElement.offsetWidth; // Trigger reflow for animation reset
+                quoteTextElement.textContent = randomQuote;
+                quoteTextElement.classList.add(randomAnimationQuote);
+            }
+
+            // 2. Coaching Tips
+            const randomTip = coachingTips[Math.floor(Math.random() * coachingTips.length)];
+            const randomAnimationTip = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+
+            if (coachingTipElement) {
+                // Clear previous classes before adding new one to reset animation
+                coachingTipElement.className = 'text-gray-600 italic';
+                void coachingTipElement.offsetWidth; // Trigger reflow for animation reset
+                coachingTipElement.innerHTML = randomTip;
+                coachingTipElement.classList.add(randomAnimationTip);
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInspirationalContent();
+            loadMyInfo(); // Load saved info after DOM is ready
+        });
 
         function setupPublicHistoryListener() {
             // Check if Firebase is active before setting up the listener
@@ -600,7 +678,7 @@
                 const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
                 
                 if (isLocal) {
-                    console.error("Local execution detected. API call to a serverless function is not supported. Please deploy the app to Vercel to enable this functionality.");
+                    console.error("Local execution detected. Skipping API call.");
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('results').classList.remove('hidden');
                     const errorMessage = `
