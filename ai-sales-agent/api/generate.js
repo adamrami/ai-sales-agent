@@ -81,7 +81,7 @@ export default async function handler(req, res) {
             myName, myRole, myServices, myCompanySelect, 
             customerName, customerCompany, customerWebsite, customerLinkedinProfile, 
             customerPersonalityType, competitorSolution, messageLength, currentLang,
-            sourceCompanyName, sourceCompanyWebsite // Custom company details if 'Other' is selected
+            sourceCompanyName, sourceCompanyWebsite, annualReportUrl 
         } = req.body;
 
         // --- SAFE DATA HANDLING ---
@@ -90,8 +90,9 @@ export default async function handler(req, res) {
         const selectedCompanyData = companyData[companyKey];
 
         // Determine final company data based on selection or custom input
-        const finalCompanyName = myCompanySelect === 'Other' ? sourceCompanyName : selectedCompanyData.name;
-        const finalCompanyWebsite = myCompanySelect === 'Other' ? sourceCompanyWebsite : selectedCompanyData.website;
+        // Note: The logic handles if a user selects 'Other' but leaves the custom fields blank.
+        const finalCompanyName = myCompanySelect === 'Other' && sourceCompanyName ? sourceCompanyName : selectedCompanyData.name;
+        const finalCompanyWebsite = myCompanySelect === 'Other' && sourceCompanyWebsite ? sourceCompanyWebsite : selectedCompanyData.website;
         const productHighlights = selectedCompanyData.highlights;
 
 
@@ -110,16 +111,17 @@ export default async function handler(req, res) {
         }
         
         // Search for company challenges and priorities
-        if (customerWebsite) {
+        if (customerCompany) {
+             searchQueries.push(`${customerCompany} strategic priorities`);
+             searchQueries.push(`${customerCompany} challenges`);
+        } else if (customerWebsite) {
              searchQueries.push(`${customerWebsite} strategic goals`);
              searchQueries.push(`${customerWebsite} current challenges`);
-        } else if (customerCompany) {
-             searchQueries.push(`${customerCompany} strategic priorities`);
-             searchQueries.push(`${customerCompany} top challenges`);
         }
+
         // Add Annual Report search query if provided
-        if (req.body.annualReportUrl) {
-            searchQueries.push(`site:${req.body.annualReportUrl} goals AND challenges`);
+        if (annualReportUrl) {
+            searchQueries.push(`${annualReportUrl} goals AND challenges`);
         }
 
         // Only call the Google Search API if there are queries
