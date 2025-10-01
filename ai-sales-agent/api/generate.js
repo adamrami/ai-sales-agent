@@ -76,8 +76,12 @@ export default async function handler(req, res) {
             sourceCompanyName, sourceCompanyWebsite // Custom company details if 'Other' is selected
         } = req.body;
 
-        // Determine company data based on selection
-        const selectedCompanyData = companyData[myCompanySelect];
+        // --- SAFE DATA HANDLING ---
+        // Ensure selectedCompanyData is a valid object, defaulting to 'Other' if necessary
+        const companyKey = myCompanySelect && companyData[myCompanySelect] ? myCompanySelect : 'Other';
+        const selectedCompanyData = companyData[companyKey];
+
+        // Determine final company data based on selection or custom input
         const finalCompanyName = myCompanySelect === 'Other' ? sourceCompanyName : selectedCompanyData.name;
         const finalCompanyWebsite = myCompanySelect === 'Other' ? sourceCompanyWebsite : selectedCompanyData.website;
         const productHighlights = selectedCompanyData.highlights;
