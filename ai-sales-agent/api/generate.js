@@ -57,6 +57,14 @@ const companyData = {
     }
 };
 
+const competitorData = {
+    "IFS": "SAP, Oracle, Microsoft Dynamics 365, Infor",
+    "SAP": "Oracle, Microsoft Dynamics 365, IFS, Infor",
+    "Oracle": "SAP, Microsoft Dynamics 365, IFS, Workday",
+    "Other": ""
+};
+
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
@@ -94,18 +102,24 @@ export default async function handler(req, res) {
         // Define key search queries for role/challenges
         const searchQueries = [];
         
-        // Search for specific role information
+        // Search for specific role information (if LinkedIn or name is provided)
         if (customerLinkedinProfile) {
             searchQueries.push(`site:linkedin.com/in/ ${customerName} title`);
+        } else if (customerName && customerCompany) {
+            searchQueries.push(`role of ${customerName} at ${customerCompany}`);
         }
         
         // Search for company challenges and priorities
-        if (customerCompany) {
-             searchQueries.push(`${customerCompany} strategic priorities`);
-             searchQueries.push(`${customerCompany} challenges`);
-        } else if (customerWebsite) {
+        if (customerWebsite) {
              searchQueries.push(`${customerWebsite} strategic goals`);
              searchQueries.push(`${customerWebsite} current challenges`);
+        } else if (customerCompany) {
+             searchQueries.push(`${customerCompany} strategic priorities`);
+             searchQueries.push(`${customerCompany} top challenges`);
+        }
+        // Add Annual Report search query if provided
+        if (req.body.annualReportUrl) {
+            searchQueries.push(`site:${req.body.annualReportUrl} goals AND challenges`);
         }
 
         // Only call the Google Search API if there are queries
@@ -182,7 +196,7 @@ export default async function handler(req, res) {
             - Customer Personality Type: ${customerPersonalityType || 'Not specified'}
             - Competitor Solution (currently used): ${competitorSolution || 'Not specified'}
 
-            Google Search Context on Customer and Industry Challenges:
+            Google Search Context on Customer and Industry Challenges (Use this to find role and challenges):
             ---
             ${searchContext || 'No external search context was found.'}
             ---
