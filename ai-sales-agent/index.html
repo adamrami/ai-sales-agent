@@ -872,7 +872,7 @@
             });
 
             // Highlight selected flag
-            flagIcons.forEach(flag => {
+            document.querySelectorAll('.flag-icon').forEach(flag => {
                 flag.classList.remove('selected');
                 if (flag.getAttribute('data-lang-code') === lang) {
                     flag.classList.add('selected');
