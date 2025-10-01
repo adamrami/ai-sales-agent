@@ -649,8 +649,30 @@
         const sourceCompanyWebsiteInput = document.getElementById('sourceCompanyWebsite');
         const flagIcons = document.querySelectorAll('.flag-icon');
 
-        // ********** FUNCTION DEFINITIONS **********
-        
+        showHelpBtn.addEventListener('click', () => {
+            mainContent.classList.add('hidden');
+            helpContent.classList.remove('hidden');
+        });
+
+        hideHelpBtn.addEventListener('click', () => {
+            helpContent.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        });
+
+        sourceCompanySelector.addEventListener('change', (e) => {
+            if (e.target.value === 'Other') {
+                customCompanyFields.classList.remove('hidden');
+                sourceCompanyNameInput.setAttribute('required', 'required');
+                sourceCompanyWebsiteInput.setAttribute('required', 'required');
+            } else {
+                customCompanyFields.classList.add('hidden');
+                sourceCompanyNameInput.removeAttribute('required');
+                sourceCompanyWebsiteInput.removeAttribute('required');
+            }
+            // Automatically populate competitors based on selected company
+            populateCompetitors(e.target.value);
+        });
+
         // Functions for My Info persistence
         function saveMyInfo() {
             const myName = myNameInput.value;
@@ -658,6 +680,7 @@
             const myServices = myServicesInput.value;
 
             if (myName && myRole && myServices) {
+                // Use localStorage for saving personal info
                 localStorage.setItem('myName', myName);
                 localStorage.setItem('myRole', myRole);
                 localStorage.setItem('myServices', myServices);
@@ -686,6 +709,18 @@
                 myInfoSaved.classList.add('hidden');
             }
         }
+        
+        // Event listeners
+        if (saveMyInfoBtn) {
+            saveMyInfoBtn.addEventListener('click', saveMyInfo);
+        }
+        if (changeMyInfoBtn) {
+            changeMyInfoBtn.addEventListener('click', () => {
+                myInfoSaved.classList.add('hidden');
+                myInfoForm.classList.remove('hidden');
+            });
+        }
+
 
         function populateCompetitors(companyName) {
             const competitorSolutionInput = document.getElementById('competitorSolution');
@@ -723,6 +758,7 @@
         }
         
         function setupPublicHistoryListener() {
+            // Check if Firebase is active before setting up the listener
             if (!isFirebaseActive || !userId) {
                 console.warn("Firebase is not active or user not authenticated. Skipping public history listener.");
                 return;
@@ -814,7 +850,7 @@
             }
         }
 
-        // This function changes the UI and is now correctly defined.
+        // This function changes the UI and is now correctly defined before the DOMContentLoaded listener.
         function updateUI(lang) {
             const data = languageData[lang];
             if (!data) return;
@@ -857,10 +893,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // This is the correct sequence to ensure all elements are defined before logic runs
-            initializeFirebase(); 
-            loadInspirationalContent();
+            // Initial call to load saved info and content
             loadMyInfo(); 
+            loadInspirationalContent();
+            
+            // Initialize Firebase and UI after DOM is ready
+            initializeFirebase(); 
             updateUI(currentLang);
         });
 
@@ -915,9 +953,7 @@
                 - Customer LinkedIn Profile: ${customerLinkedinProfile}
                 - Customer Personality Type: ${customerPersonalityType || 'Not specified'}
                 - Competitor Solution (currently used): ${competitorSolution || 'Not specified'}
-                - Customer Annual Report content: ${annualReportUrl ? 'Search is requested' : 'Not provided'}
-                - Customer Website content: ${customerWebsite ? 'Search is requested' : 'Not provided'}
-
+                - Customer Annual Report content: ${annualReportContent || 'Not provided'}
 
                 ${myCompanyName} solutions key highlights:
                 ${highlightsList}
@@ -975,15 +1011,7 @@
                     return;
                 }
                 
-                const payload = { 
-                    myName, myRole, myServices, myCompanySelect: form.sourceCompanySelector.value, // Send raw value
-                    customerName, customerCompany, customerWebsite, customerLinkedinProfile, 
-                    customerPersonalityType, competitorSolution, messageLength, currentLang,
-                    sourceCompanyName: form.sourceCompanyName.value, 
-                    sourceCompanyWebsite: form.sourceCompanyWebsite.value,
-                    // Pass the final prompt to the serverless function
-                    prompt: finalPrompt
-                };
+                const payload = { prompt: finalPrompt };
                 const apiUrl = '/api/generate';
 
                 let retryCount = 0;
@@ -1182,7 +1210,7 @@
                         `;
                     }, 2000);
                 } catch (execErr) {
-                    console.error('Fallback copy method also failed:', err);
+                    console.error('Fallback copy method also failed:', execErr);
                 } finally {
                     document.body.removeChild(textarea);
                 }
