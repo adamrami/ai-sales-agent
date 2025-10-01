@@ -4,6 +4,59 @@
 // The GEMINI_API_KEY is stored securely as an environment variable on Vercel.
 const apiKey = process.env.GEMINI_API_KEY; 
 
+// STATIC DATA (Moved from index.html to be accessible on the server)
+const companyData = {
+    "IFS": {
+        name: "IFS",
+        website: "https://www.ifs.com",
+        highlights: [
+            "A single, unified cloud platform for ERP, Enterprise Asset Management (EAM), and Field Service Management (FSM).",
+            "Industry-specific solutions tailored for industries like manufacturing, construction, energy, and aerospace.",
+            "Advanced project management capabilities with real-time tracking, resource allocation, and cost control.",
+            "Robust supply chain management to optimize inventory, procurement, and logistics.",
+            "Mobile-first design for field technicians and a user-friendly, adaptable interface.",
+            "Built-in analytics and business intelligence for data-driven decision making.",
+            "Servitization enablement to help companies transition from selling products to selling services."
+        ]
+    },
+    "SAP": {
+        name: "SAP S/4HANA",
+        website: "https://www.sap.com/products/s4hana-erp.html",
+        highlights: [
+            "An intelligent, integrated ERP system that runs on an in-memory database to enable real-time decision-making.",
+            "Combines traditional ERP with advanced technologies like AI and machine learning.",
+            "Provides a comprehensive suite of business applications for finance, supply chain, and more.",
+            "Known for its deep functionality and a wide array of modules for complex business processes.",
+            "Helps large enterprises manage global operations and scale across various industries.",
+            "Focuses on a streamlined digital core with simplified data models."
+        ]
+    },
+    "Oracle": {
+        name: "Oracle Cloud ERP",
+        website: "https://www.oracle.com/erp/",
+        highlights: [
+            "A complete and modern ERP system with built-in AI, machine learning, and advanced analytics.",
+            "Provides a full suite of applications for finance, procurement, project management, and risk management.",
+            "Offers continuous innovation with quarterly updates and a modern user interface.",
+            "Known for its strong financial management and robust reporting capabilities.",
+            "Helps businesses automate processes, increase agility, and gain a competitive advantage.",
+            "Provides a unified data model for a single source of truth across the enterprise."
+        ]
+    },
+    "Other": {
+        name: "",
+        website: "",
+        highlights: [
+            "A comprehensive business solution designed to streamline your operations and drive growth.",
+            "Integrates key business functions like finance, operations, and supply chain management on a single platform.",
+            "Provides real-time visibility and data-driven insights to support smarter decision-making.",
+            "Offers a flexible and scalable architecture that adapts to your unique industry and business needs.",
+            "Automates routine tasks and workflows to boost efficiency and productivity.",
+            "Features a user-centric design that enhances user adoption and simplifies complex processes."
+        ]
+    }
+};
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
@@ -17,10 +70,18 @@ export default async function handler(req, res) {
     try {
         // Destructure all necessary inputs from the frontend
         const { 
-            myName, myRole, myServices, myCompanyName, myCompanyWebsite,
+            myName, myRole, myServices, myCompanySelect, 
             customerName, customerCompany, customerWebsite, customerLinkedinProfile, 
-            customerPersonalityType, competitorSolution, messageLength, currentLang 
+            customerPersonalityType, competitorSolution, messageLength, currentLang,
+            sourceCompanyName, sourceCompanyWebsite // Custom company details if 'Other' is selected
         } = req.body;
+
+        // Determine company data based on selection
+        const selectedCompanyData = companyData[myCompanySelect];
+        const finalCompanyName = myCompanySelect === 'Other' ? sourceCompanyName : selectedCompanyData.name;
+        const finalCompanyWebsite = myCompanySelect === 'Other' ? sourceCompanyWebsite : selectedCompanyData.website;
+        const productHighlights = selectedCompanyData.highlights;
+
 
         // --- 1. Perform Google Search for Customer Context ---
         
@@ -28,25 +89,28 @@ export default async function handler(req, res) {
         
         // Define key search queries for role/challenges
         const searchQueries = [];
+        
+        // Search for specific role information
         if (customerLinkedinProfile) {
-            searchQueries.push(`site:linkedin.com/in/ ${customerName}`);
+            searchQueries.push(`site:linkedin.com/in/ ${customerName} title`);
         }
-        if (customerWebsite) {
+        
+        // Search for company challenges and priorities
+        if (customerCompany) {
              searchQueries.push(`${customerCompany} strategic priorities`);
              searchQueries.push(`${customerCompany} challenges`);
-        } else {
-             // Fallback search if no specific URL is provided
-             searchQueries.push(`${customerCompany} top challenges`);
+        } else if (customerWebsite) {
+             searchQueries.push(`${customerWebsite} strategic goals`);
+             searchQueries.push(`${customerWebsite} current challenges`);
         }
 
         // Only call the Google Search API if there are queries
         if (searchQueries.length > 0) {
-            // Note: The google_search tool is assumed to be available in the Vercel environment
             const searchResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `Search for information related to: ${searchQueries.join('; ')}` }] }],
+                    contents: [{ parts: [{ text: `Search for the following commercial information: ${searchQueries.join('; ')}` }] }],
                     tools: [{ "google_search": {} }]
                 })
             });
@@ -59,7 +123,7 @@ export default async function handler(req, res) {
                 
                 if (groundingAttributions.length > 0) {
                     searchContext = groundingAttributions.map((attr, index) => 
-                        `Source ${index + 1}: ${attr.web?.title || 'No Title'} - Snippet: ${attr.web?.snippet || 'No Snippet'}`
+                        `Source ${index + 1} - Title: ${attr.web?.title || 'No Title'} - Snippet: ${attr.web?.snippet || 'No Snippet'}`
                     ).join('\n---\n');
                 }
             }
@@ -67,7 +131,7 @@ export default async function handler(req, res) {
 
         // --- 2. Construct the Final Prompt for the AI Agent ---
         
-        const highlightsList = companyData[myCompanyName]?.highlights ? companyData[myCompanyName].highlights.map(h => `- ${h}`).join('\n') : productHighlights.map(h => `- ${h}`).join('\n');
+        const highlightsList = productHighlights.map(h => `- ${h}`).join('\n');
 
         let lengthConstraint = '';
         if (messageLength === 'short') {
@@ -83,7 +147,7 @@ export default async function handler(req, res) {
         const systemInstruction = `
             You are a world-class sales agent specializing in B2B enterprise solutions. Your goal is to generate three highly personalized email drafts in three distinct tones: Professional, Engaging, and Relaxed.
 
-            The final output MUST be in ${currentLang} language, based on the user's explicit request.
+            The final output MUST be in ${currentLang} language.
 
             Your pitch must be tailored based on the customer's role and challenges, using the provided context and the search results.
 
@@ -102,8 +166,8 @@ export default async function handler(req, res) {
             My Information:
             - My Name: ${myName}
             - My Role: ${myRole}
-            - My Company's Name: ${myCompanyName}
-            - My Company's Website: ${myCompanyWebsite}
+            - My Company's Name: ${finalCompanyName}
+            - My Company's Website: ${finalCompanyWebsite}
             - My Company's Core Services/Value Proposition: ${myServices}
             - My Company's Key Highlights: ${highlightsList}
 
