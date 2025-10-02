@@ -893,13 +893,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initial call to load saved info and content
-            loadMyInfo(); 
-            loadInspirationalContent();
-            
-            // Initialize Firebase and UI after DOM is ready
             initializeFirebase(); 
+            
+            // These functions are called after Firebase and all DOM elements are accessible
+            loadInspirationalContent();
+            loadMyInfo(); // Load saved info after DOM is ready
             updateUI(currentLang);
+            
+            // Restore visibility of custom fields if 'Other' was selected previously
+            if (sourceCompanySelector.value === 'Other') {
+                customCompanyFields.classList.remove('hidden');
+            }
+
+            // Manually re-run the change logic on load to ensure placeholders/competitors are set
+            sourceCompanySelector.dispatchEvent(new Event('change'));
         });
 
         document.getElementById('emailForm').addEventListener('submit', async function(e) {
@@ -1011,7 +1018,16 @@
                     return;
                 }
                 
-                const payload = { prompt: finalPrompt };
+                const payload = { 
+                    myName, myRole, myServices, myCompanySelect: form.sourceCompanySelector.value, // Send raw value
+                    customerName, customerCompany, customerWebsite, customerLinkedinProfile, 
+                    customerPersonalityType, competitorSolution, messageLength, currentLang,
+                    sourceCompanyName: form.sourceCompanyName.value, 
+                    sourceCompanyWebsite: form.sourceCompanyWebsite.value,
+                    annualReportUrl: form.annualReportUrl.value, // Send annualReportUrl
+                    // Pass the final prompt to the serverless function
+                    prompt: finalPrompt
+                };
                 const apiUrl = '/api/generate';
 
                 let retryCount = 0;
