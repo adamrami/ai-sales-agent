@@ -64,6 +64,21 @@ const competitorData = {
     "Other": ""
 };
 
+// Helper function to translate language code to full name for Gemini API
+const getFullLanguageName = (code) => {
+    switch (code) {
+        case 'sv':
+            return 'Swedish';
+        case 'en':
+            return 'English';
+        case 'es':
+            return 'Spanish';
+        case 'fa':
+            return 'Persian (Farsi)';
+        default:
+            return 'English';
+    }
+};
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -94,6 +109,9 @@ export default async function handler(req, res) {
         const finalCompanyName = myCompanySelect === 'Other' && sourceCompanyName ? sourceCompanyName : selectedCompanyData.name;
         const finalCompanyWebsite = myCompanySelect === 'Other' && sourceCompanyWebsite ? sourceCompanyWebsite : selectedCompanyData.website;
         const productHighlights = selectedCompanyData.highlights;
+        
+        // Get full language name for system instruction
+        const targetLanguage = getFullLanguageName(currentLang);
 
 
         // --- 1. Perform Google Search for Customer Context ---
@@ -167,7 +185,8 @@ export default async function handler(req, res) {
         const systemInstruction = `
             You are a world-class sales agent specializing in B2B enterprise solutions. Your goal is to generate three highly personalized email drafts in three distinct tones: Professional, Engaging, and Relaxed.
 
-            The final output MUST be in ${currentLang} language.
+            // CRITICAL FIX: Use the full language name here to avoid 400 Bad Request
+            The final output MUST be in ${targetLanguage} language.
 
             Your pitch must be tailored based on the customer's role and challenges, using the provided context and the search results.
 
@@ -204,7 +223,7 @@ export default async function handler(req, res) {
             ---
 
             Constraints:
-            - Output Language: ${currentLang}
+            - Output Language: ${targetLanguage}
             - Message Length: ${lengthConstraint}
             
             Generate the JSON array now.
@@ -214,7 +233,10 @@ export default async function handler(req, res) {
 
         const payload = {
             contents: [{ parts: [{ text: userPrompt }] }],
-            systemInstruction: systemInstruction,
+            // Include system instruction in the payload
+            systemInstruction: {
+                parts: [{ text: systemInstruction }]
+            },
             generationConfig: {
                 responseMimeType: "application/json",
                 responseSchema: {
