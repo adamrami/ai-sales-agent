@@ -239,7 +239,7 @@ export default async function handler(req, res) {
             },
             generationConfig: {
                 responseMimeType: "application/json",
-                responseSchema: {
+                    responseSchema: {
                     type: "ARRAY",
                     items: {
                         type: "OBJECT",
